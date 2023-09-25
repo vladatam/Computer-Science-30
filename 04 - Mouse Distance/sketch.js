@@ -18,7 +18,7 @@ function setup() {
 function draw() {
   background(220);
   renderNodes();
-  segmentDistance(mouseX,mouseY,)
+  segmentDistance(mouseX,mouseY,);
 }
 
 function initColors(){
@@ -38,7 +38,7 @@ function renderNodes(){
   circle(width/2,height/2,20);
   circle(mouseX, mouseY,20);
   line(width/2,height/2,mouseX,mouseY);
-  //displat distance
+  //display distance
   let d = segmentDistance(mouseX,mouseY,width/2,height/2);
   textAlign(CENTER);
   text(round(d,1),width/2,height/2+50);
@@ -59,16 +59,17 @@ function mouseWheel(event){
   //negative goes up, positve goes down.
   print(event.delta);
   if(event.delta < 0){
-    colorIndex +=1;
-    if(colorIndex > nodeColors.lenght-1){
+    colorIndex ++;
+    print(colorIndex);
+    if(colorIndex >= nodeColors.length){
       colorIndex = 0;
     }
   }
-  else{
-    colorIndex -=1;
+  else if(event.delta > 0){
+    colorIndex --;
     print(colorIndex);
-    if(colorIndex < 0){
-      colorIndex =0;
+    if (colorIndex < nodeColors.length-1){
+      colorIndex *= -1;
     }
   }
 }
