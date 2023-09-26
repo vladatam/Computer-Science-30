@@ -4,8 +4,15 @@
 //
 // Extra for Experts:
 // -Designing a primitive painting program using P5 library and refrence.
+
+//Global Variables
 let overlay;
 let overlay2;
+let nodeColors = [ ];
+let colorIndex = 2;
+let sizeX = 10;
+let sizeY = 10; 
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   overlay = createGraphics(width,height);
@@ -15,27 +22,49 @@ function setup() {
 function draw() {
   background(220);
   reset();
-  autoArt();
+  changeSize();
   drawRectangle();
   image(overlay,0,0);
   drawCircle();
   image(overlay,0,0);
   drawTriangle();
   image(overlay,0,0);
+  autoArt();
+}
+
+//Change size of the shapes. 
+function changeSize(){
+  if(keyIsPressed){
+    if (keyCode === 38){
+      sizeX += 5;
+      sizeY += 5;
+      print(sizeX,sizeY);
+    }
+    if (keyCode === 40){
+      sizeX -= 5;
+      sizeY -= 5;
+
+    }
+    if(sizeX < 0 || sizeY < 0){
+      sizeX =0;
+      sizeY =0;
+    }
+  }
 }
 
 //Draw a rectangle at mouse position
 function drawRectangle(){
   if(keyPressed){
     if (key === "a"){
-      rect(mouseX-10,mouseY-10, 20, 20);
+      rect(mouseX-10,mouseY-10, sizeX, sizeY);
       if (mouseIsPressed){
         if (mouseButton === LEFT){
-          overlay.rect(mouseX-10,mouseY-10, 20, 20);
+          overlay.rect(mouseX-10,mouseY-10, sizeX, sizeY);
           image(overlay,0,0);
         }
       }
     }
+
   }
 }
 //Draw a circle at mouse poistion
@@ -69,24 +98,15 @@ function drawTriangle(){
   }
 }
 //Autonomous Art
-let x = 0;
-let y = 0;
 function autoArt(){ 
-  if (x=>0 ){
-    x +=1;
-    print(x);
-    if (x >= width){
-      x *= -1;
-    }
-  }
-  overlay2.circle(x,100,random(0,100));
+  overlay2.circle(width/2,height/2,random(0,100));
   overlay2.fill(random(0,255),random(0,255),random(0,255));
   image(overlay2,0,0);
 }
-
 function reset(){
   if(keyCode === 32){
     overlay.clear();
+    overlay2.clear();
   }
 
 }
@@ -97,29 +117,27 @@ function keyPressed(){
 function mousePressed(){
   print("mouse", mouseButton);
 }
-//Scroll Wheel to change colours. 
-// function mouseWheel(event){
-//   let colors = ["blue","red","green","purple","orange","yellow"];
-//   if (event.delta < 0){
-//     print(event.delta);
-//     for(let count =0; colors.length -= 1;){
-//       count ++;
-//       print(count);
-//       fill(colors[count]);
-//       print(colors[count]);
-//     }
-//   }
-// } 
-//     for (let i = 0; i< colors.length; i ++){
-//       overlay.fill(colors[i]);
-//       i +=2;
-//     } 
-//   } 
-//   if (event.delta > 0){
-//     for (let i =colors.length-1; i>=0; i --){
-//       overlay.fill(colors[i]);
-//     } 
-//   } 
-//   print(event.delta);
-//   return false;
-// }
+//Change colours using scroll wheel
+function mouseWheel(event){
+  let colours = ["blue", "red", "green", "yellow", "orange","purple"];
+  print(event.delta);
+  if(event.delta < 0){
+    colorIndex ++;
+    print(colorIndex);
+    if(colorIndex >= colours.length){
+      colorIndex = 0;
+    }
+    fill(colours[colorIndex]);
+    overlay.fill(colours[colorIndex]);
+  }
+  else if(event.delta > 0){
+    colorIndex --;
+    print(colorIndex);
+    if (colorIndex <= 0){
+      colorIndex = colours.length-1;
+    }
+    fill(colours[colorIndex]);
+    overlay.fill(colours[colorIndex]);  
+  }
+  return false; //Disables browser scrolling. 
+}
