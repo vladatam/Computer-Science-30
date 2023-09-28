@@ -6,95 +6,77 @@
 // -Designing a primitive painting program using P5 library and refrence.
 
 //Global Variables
-let overlay;
-let overlay2;
+let overlay, overlay2, overlay3;
 let nodeColors = [ ];
 let colorIndex = 2;
-let sizeX = 10;
-let sizeY = 10; 
+let shapeSize = 10;
+let currentBrush =0; 
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  overlay = createGraphics(width,height);
-  overlay2 = createGraphics(width,height);
+  overlay,overlay2,overlay3 = createGraphics(width,height);
+  rectMode(CENTER);
+  noStroke();
+  overlay.noStroke();
+  
 }
 
-function draw() {
-  background(220);
-  reset();
-  changeSize();
-  drawRectangle();
-  image(overlay,0,0);
-  drawCircle();
-  image(overlay,0,0);
-  drawTriangle();
-  image(overlay,0,0);
+function draw() { 
+  background(225);
   autoArt();
+  reset();
+  drawShape();
+  image(overlay,0,0);
+  changeSize();
+  image(overlay2,0,0);
+  
+
 }
 
 //Change size of the shapes. 
 function changeSize(){
   if(keyIsPressed){
     if (keyCode === 38){
-      sizeX += 5;
-      sizeY += 5;
+      shapeSize+=1;
     }
     if (keyCode === 40){
-      sizeX -= 5;
-      sizeY -= 5;
-
+      shapeSize -=1;
     }
-    if(sizeX < 0 || sizeY < 0){
-      sizeX =0;
-      sizeY =0;
+    if(shapeSize< 0){
+      shapeSize =0;
     }
   }
 }
 
 //Draw a rectangle at mouse position
-function drawRectangle(){
-  if(keyPressed){
-    if (key === "a"){
-      rect(mouseX-10,mouseY-10, sizeX, sizeY);
-      if (mouseIsPressed){
-        if (mouseButton === LEFT){
-          overlay.rect(mouseX-10,mouseY-10, sizeX, sizeY);
-          image(overlay,0,0);
-        }
-      }
+function drawShape(){
+  if (keyPressed){
+    if(key === "a"){
+      overlay.rect(mouseX,mouseY,shapeSize);
+      currentBrush =1;
     }
+    if(key === "s"){
+      overlay.circle(mouseX,mouseY,shapeSize);
+      currentBrush =2;
+    }
+    if(key === "d"){  
+      overlay.triangle(mouseX,mouseY-shapeSize,mouseX-shapeSize,mouseY+shapeSize,mouseX+shapeSize,mouseY+shapeSize);
+      currentBrush =3;
+    }
+  }
+  if (mouseIsPressed){ 
+    if(currentBrush === 1){
+      overlay2.rect(mouseX,mouseY,shapeSize);
+    }
+    if(currentBrush === 2){
+      overlay2.circle(mouseX,mouseY,shapeSize);
+    }
+    if(currentBrush ===3){
+      overlay2.triangle(mouseX,mouseY-shapeSize,mouseX-shapeSize,mouseY+shapeSize,mouseX+shapeSize,mouseY+shapeSize);
 
+    }
   }
-}
-//Draw a circle at mouse poistion
-function drawCircle(){
-  if(keyPressed){
-    if (key ==="s"){
-      circle(mouseX,mouseY,30);
-      if (mouseIsPressed){
-        if (mouseButton === LEFT){
-          overlay.circle(mouseX, mouseY, 30);
-          image(overlay,0,0);
-        }
-      }
   
-    }
-  }
-    
-}
-//Draw a triangle 
-function drawTriangle(){
-  if(keyPressed){
-    if (key ==="d"){
-      triangle(mouseX,mouseY-20,mouseX-10,mouseY+10,mouseX+10,mouseY+10);
-      if (mouseIsPressed){
-        if (mouseButton === LEFT){
-          overlay.triangle(mouseX,mouseY-20,mouseX-10,mouseY+10,mouseX+10,mouseY+10);
-          image(overlay,0,0);
-        }
-      }
-    }
-  }
 }
 //Autonomous Art
 function autoArt(){ 
