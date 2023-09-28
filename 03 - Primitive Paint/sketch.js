@@ -38,7 +38,6 @@ function changeSize(){
     if (keyCode === 38){
       sizeX += 5;
       sizeY += 5;
-      print(sizeX,sizeY);
     }
     if (keyCode === 40){
       sizeX -= 5;
