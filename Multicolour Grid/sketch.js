@@ -4,27 +4,59 @@
 //
 // Create a interactive square grid randomly coloured 
 
-let segmentHeight; //state variable (0,2)
-const GRID_SPACING = 10; // CAP > const
-let x,y;
+//Global Variables
+let numSegments = 30;
+let squareSize = 50;
+let colour;
+
+function changeSize(){
+  if(mouseIsPressed){
+    if(mouseButton === LEFT){
+      squareSize -= 1;
+      print(mouseButton);
+    }
+    if(mouseButton === RIGHT){
+      squareSize +=1;
+      print(mouseButton);
+    }
+  }
+
+} 
 
 function grid(){
-  //create grid 
-  rect(x,y,10);
-  for (let x = 0; x < width; x + GRID_SPACING){
-    for (let y = 0; y < height; y +GRID_SPACING){
-      rect(x,y,10);
+  //use a nested loop to draw a grid on the screen.
+  for(let x = 0; x < width; x += squareSize){
+    for(let y = 0; y < height; y += squareSize){
+      rect(x,y,squareSize);
     }
   }
 }
 
+function randomColours(){
+  colour = color(random(255),random(255),random(255));
+  for(let x = 0; x < width; x += squareSize){
+    fill(colour);
+    for(let y = 0; y < height; y += squareSize){
+      fill(colour);
+    }
+  }
   
+}
+
+
 
 function setup() {
+  document.addEventListener("contextmenu", event => event.preventDefault());
   createCanvas(windowWidth, windowHeight);
+  randomColours();
+  
+  
 }
 
 function draw() {
-  background(225);
   grid();
+  changeSize();
+ 
+  
+
 }

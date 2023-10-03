@@ -14,11 +14,13 @@ let currentBrush =0;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  overlay,overlay2,overlay3 = createGraphics(width,height);
+  overlay = createGraphics(width,height);
+  overlay2 = createGraphics(width,height);
   rectMode(CENTER);
   noStroke();
   overlay.noStroke();
-  
+  drawShape();
+
 }
 
 function draw() { 
@@ -27,7 +29,6 @@ function draw() {
   reset();
   drawShape();
   image(overlay,0,0);
-  changeSize();
   image(overlay2,0,0);
   
 
@@ -51,6 +52,7 @@ function changeSize(){
 //Draw a rectangle at mouse position
 function drawShape(){
   if (keyPressed){
+    changeSize();
     if(key === "a"){
       overlay.rect(mouseX,mouseY,shapeSize);
       currentBrush =1;
