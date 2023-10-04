@@ -16,8 +16,8 @@ function setup() {
 
 function draw() {
   background(220);
-  racer.display();
-  racer.move();
+  racers.display();
+  racers.move();
   
 }
 
