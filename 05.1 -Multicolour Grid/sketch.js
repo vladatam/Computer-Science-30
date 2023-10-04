@@ -27,28 +27,19 @@ function grid(){
   //use a nested loop to draw a grid on the screen.
   for(let x = 0; x < width; x += squareSize){
     for(let y = 0; y < height; y += squareSize){
+      fill(random(0,255),random(0,255),random(0,255));
       rect(x,y,squareSize);
     }
   }
 }
 
-function randomColours(){
-  colour = color(random(255),random(255),random(255));
-  for(let x = 0; x < width; x += squareSize){
-    fill(colour);
-    for(let y = 0; y < height; y += squareSize){
-      fill(colour);
-    }
-  }
-  
-}
+
 
 
 
 function setup() {
   document.addEventListener("contextmenu", event => event.preventDefault());
   createCanvas(windowWidth, windowHeight);
-  randomColours();
   
   
 }
