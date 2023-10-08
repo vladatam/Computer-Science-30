@@ -2,79 +2,104 @@
 // Vlad Atamancuk
 // Sep 15, 2023
 //
-// Extra for Experts:
-// -Designing a primitive painting program using P5 library and refrence.
+// Creating a mediocare paint program using p5 library. 
 
 //Global Variables
-let overlay, overlay2, overlay3;
+let render, autonomous, name;
 let nodeColors = [ ];
-let colorIndex = 2;
-let shapeSize = 10;
-let currentBrush =0; 
+let colorIndex = 0;
+let shapeSize = 20;
+let currentBrush = 0; 
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  overlay = createGraphics(width,height);
-  overlay2 = createGraphics(width,height);
+  render = createGraphics(width,height);
+  name =  createGraphics(width,height);
+  autonomous = createGraphics(width,height);
   rectMode(CENTER);
-  noStroke();
-  overlay.noStroke();
-  drawShape();
+  
+  
 
 }
 
 function draw() { 
   background(225);
-  autoArt();
-  reset();
+  type();
+  image(name,0,0);
+  autoArt(); 
+  reset(); 
+  image(render,0,0);
   drawShape();
-  image(overlay,0,0);
-  image(overlay2,0,0);
+ 
+  image(autonomous,0,0);
+  
   
 
 }
 
 //Change size of the shapes. 
+
 function changeSize(){
   if(keyIsPressed){
     if (keyCode === 38){
-      shapeSize+=1;
+      shapeSize+=2;
     }
     if (keyCode === 40){
-      shapeSize -=1;
+      shapeSize -=2;
     }
-    if(shapeSize< 0){
-      shapeSize =0;
+    if(currentBrush === 1){
+        rect(mouseX,mouseY,shapeSize);
+      }
+    if(currentBrush === 2){
+        circle(mouseX,mouseY,shapeSize);
+      }
+    if(currentBrush === 3){
+        triangle(mouseX,mouseY-shapeSize/2,mouseX-shapeSize/2,mouseY+shapeSize/2,mouseX+shapeSize/2,mouseY+shapeSize/2);
+      }
+    } 
+    
+    //Minimum Shape Size
+    if(shapeSize< 20){
+      shapeSize =20;
     }
-  }
+    
+    //Maximum Shape Size
+    if(shapeSize >400){
+      shapeSize = 400;
+    }
+  
 }
+
 
 //Draw a rectangle at mouse position
 function drawShape(){
+  
   if (keyPressed){
-    changeSize();
     if(key === "a"){
-      overlay.rect(mouseX,mouseY,shapeSize);
+      rect(mouseX,mouseY,shapeSize);
       currentBrush =1;
+
     }
     if(key === "s"){
-      overlay.circle(mouseX,mouseY,shapeSize);
+      circle(mouseX,mouseY,shapeSize);
       currentBrush =2;
     }
     if(key === "d"){  
-      overlay.triangle(mouseX,mouseY-shapeSize,mouseX-shapeSize,mouseY+shapeSize,mouseX+shapeSize,mouseY+shapeSize);
+      triangle(mouseX,mouseY-shapeSize/2,mouseX-shapeSize/2,mouseY+shapeSize/2,mouseX+shapeSize/2,mouseY+shapeSize/2);
       currentBrush =3;
     }
   }
+  changeSize();
   if (mouseIsPressed){ 
+    rectMode(CENTER);
     if(currentBrush === 1){
-      overlay2.rect(mouseX,mouseY,shapeSize);
+      render.square(mouseX-shapeSize/2,mouseY-shapeSize/2,shapeSize);
     }
     if(currentBrush === 2){
-      overlay2.circle(mouseX,mouseY,shapeSize);
+      render.circle(mouseX,mouseY,shapeSize);
     }
     if(currentBrush ===3){
-      overlay2.triangle(mouseX,mouseY-shapeSize,mouseX-shapeSize,mouseY+shapeSize,mouseX+shapeSize,mouseY+shapeSize);
+      render.triangle(mouseX,mouseY-shapeSize/2,mouseX-shapeSize/2,mouseY+shapeSize/2,mouseX+shapeSize/2,mouseY+shapeSize/2);
 
     }
   }
@@ -82,17 +107,29 @@ function drawShape(){
 }
 //Autonomous Art
 function autoArt(){ 
-  overlay2.circle(width/2,height/2,random(0,100));
-  overlay2.fill(random(0,255),random(0,255),random(0,255));
-  image(overlay2,0,0);
+  autonomous.circle(width/2,height/2,random(0,100));
+  autonomous.fill(random(0,255),random(0,255),random(0,255));
+  image(autonomous,0,0);
 }
 function reset(){
   if(keyCode === 32){
-    overlay.clear();
-    overlay2.clear();
+    render.clear();
+    shapeSize = 20;
+
   }
 
 }
+
+// Typography
+
+function type(){
+  name.textSize(40);
+  name.textFont('Times New Roman');
+  name.textAlign(CENTER);
+  name.text ('Vlad Atamanchuk', width/2, height*0.9);
+
+}
+
 //Check which inputs are pressed. 
 function keyPressed(){
   print("key", key, "\tkeyCode", keyCode);  
@@ -100,6 +137,8 @@ function keyPressed(){
 function mousePressed(){
   print("mouse", mouseButton);
 }
+
+
 //Change colours using scroll wheel
 function mouseWheel(event){
   let colours = ["blue", "red", "green", "yellow", "orange","purple"];
@@ -111,7 +150,7 @@ function mouseWheel(event){
       colorIndex = 0;
     }
     fill(colours[colorIndex]);
-    overlay.fill(colours[colorIndex]);
+    render.fill(colours[colorIndex]);
   }
   else if(event.delta > 0){
     colorIndex --;
@@ -120,7 +159,8 @@ function mouseWheel(event){
       colorIndex = colours.length-1;
     }
     fill(colours[colorIndex]);
-    overlay.fill(colours[colorIndex]);  
+    render.fill(colours[colorIndex]);  
   }
   return false; //Disables browser scrolling. 
 }
+
