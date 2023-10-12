@@ -10,20 +10,20 @@ let lineWidth =1.5;
 let x = 0;
 const noiseShift = 0.01;
 let numSegments; 
+let tallestRect =0;
+let currentRectX,currentRectY;
 
 
 function randomTerrain(){
-
-  let noiseReduction = height;
-  let tallestRect =0, tallestRectX;
-  let averageCalc = 0;
-  let totalHeight =0; 
-
   rectMode(CORNERS);
   strokeWeight(lineWidth);
 
-  for(let i=0; i < width; i++){
 
+  let noiseReduction = height; 
+  let averageCalc = 0;
+  let totalHeight =0; 
+
+  for(let i=0; i < width; i++){
     numSegments = i;
     x += segmentLength;
 
@@ -35,13 +35,14 @@ function randomTerrain(){
     noiseReduction += noiseShift; 
 
     //Find tallest rectangle
-    let currentRect = heightRect;
-    if(currentRect > tallestRect){
-      tallestRect = currentRect;
-      print(height - tallestRect);
+    currentRectY = heightRect;
+    if(currentRectY > tallestRect){
+      tallestRect = currentRectY; 
+      currentRectX = numSegments;
+      tallestRect -= height;
+      tallestRect *=-1;
+      print('x', currentRectX, 'y', tallestRect);
     }
-    
-
     //Render the mountains
     rect(x,height,x,heightRect);
 
@@ -53,22 +54,27 @@ function randomTerrain(){
     
   } 
 
+  //Put flag at tallest
+  print('FINAL x', currentRectX, 'y', tallestRect);
+  drawFlag(currentRectX,tallestRect);
+
   //Render the line at average
   stroke("red");
   strokeWeight(2);
   line(0,averageCalc,width,averageCalc);
   stroke(0);
 
-  //Put flag at tallest
-  drawFlag(100,height - tallestRect);
-}
+  
+} 
 
 function drawFlag(positionX,positionY){
+  positionY -=20;
   rectMode(CORNER);
-  stroke("red");
-  rect(positionX,positionY,1,10);
-  triangle(positionX,positionY,positionX+2,positionY+2,positionX+4,positionY+5);
-  stroke(0);
+  fill("red");
+  strokeWeight(0);
+  rect(positionX,positionY,4,20);
+  triangle(positionX+4,positionY+10,positionX+14,positionY+10,positionX+4,positionY);
+  fill(0);
   rectMode(CORNERS);
 }
 
