@@ -40,7 +40,7 @@ class MiniPoint {
     this.c = color(random(255),random(255),random(255));
     this.xTime = random(10); this.yTime = random(10); //random starting times for objects.
     this.timeShift = 0.01; //shift in the time values
-    this.maxSpeed = 5; 
+    this.maxSpeed = 100; 
   }
   //class functions 
   move(){
