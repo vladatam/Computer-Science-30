@@ -1,3 +1,4 @@
+
 // Terrain Generation
 // Vlad Atamanchuk
 //  Oct 5, 2023 
@@ -14,7 +15,7 @@ let tallestRect =0;
 let currentRectX,currentRectY;
 
 
-function randomTerrain(){
+function calculateTerrain(){
   rectMode(CORNERS);
   strokeWeight(lineWidth);
 
@@ -67,6 +68,7 @@ function randomTerrain(){
   
 } 
 
+
 function drawFlag(positionX,positionY){
   positionY -=20;
   rectMode(CORNER);
@@ -80,9 +82,9 @@ function drawFlag(positionX,positionY){
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  randomTerrain();
+  
 }
 
 function draw() {
-
+  calculateTerrain();
 }
