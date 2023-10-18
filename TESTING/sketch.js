@@ -1,38 +1,96 @@
-/*
- * @name Wavemaker
- * @arialabel Water like waves of neon green lines moving in circular patterns. The user’s mouse can change the direction of the current in the waves
- * @description This illustrates how waves (like water waves) emerge
- * from particles oscillating in place. Move your mouse to direct the wave.
- * Contributed by Aatish Bhatia, inspired by <a href="https://beesandbombs.tumblr.com/post/45513650541/orbiters">Orbiters</a> by Dave Whyte.
- */
-
-let t = 0; // time variable
+let segmentLength = 1;
+let lineWidth = 1.5;
+let x = 0;
+let noiseValue = 0; // Initial noise value
+const noiseShift = 0.01;
+let numSegments;
+let tallestRect = 0;
+let currentRectX, currentRectY;
+let terrain = [];
+let terrainBuffer = [];
+let canvasWidth;
+let canvasHeight;
+let bufferOffset = 0;
 
 function setup() {
-  createCanvas(600, 600);
-  noStroke();
-  fill(40, 200, 40);
+  canvasWidth = windowWidth;
+  canvasHeight = windowHeight;
+  createCanvas(canvasWidth, canvasHeight);
+  generateInitialTerrain();
+}
+
+function generateInitialTerrain() {
+  for (let i = 0; i < canvasWidth; i++) {
+    terrainBuffer.push(generateTerrainPoint());
+  }
+}
+
+function generateTerrainPoint() {
+  let heightRect = random(canvasHeight);
+  heightRect = noise(noiseValue); // Use the noiseValue
+  heightRect = map(heightRect, 0, 1, 0, canvasHeight);
+  noiseValue += noiseShift; // Increment noise value
+  return heightRect;
+}
+
+function updateTerrain() {
+  let newTerrainPoint = generateTerrainPoint();
+  terrainBuffer.shift();
+  terrainBuffer.push(newTerrainPoint);
+  bufferOffset += segmentLength; // Move the terrain to the right
+}
+
+function renderTerrain() {
+  background(255); // Clear the background
+  rectMode(CORNERS);
+  strokeWeight(lineWidth);
+
+  let averageCalc = terrainBuffer.reduce((a, b) => a + b, 0) / terrainBuffer.length;
+
+  for (let i = 0; i < terrainBuffer.length; i++) {
+    x = i * segmentLength;
+    // Render the mountains
+    rect(x, canvasHeight, x, canvasHeight - terrainBuffer[i]);
+  }
+
+  // Put flag at the tallest point in the terrain
+  let maxTerrainHeight = Math.max(...terrainBuffer);
+  let flagX = terrainBuffer.indexOf(maxTerrainHeight) * segmentLength;
+  drawFlag(flagX, canvasHeight - maxTerrainHeight);
+
+  // Render the line at average height
+  stroke("red");
+  strokeWeight(2);
+  line(0, canvasHeight - averageCalc, canvasWidth, canvasHeight - averageCalc);
+  stroke(0);
+}
+
+function drawFlag(positionX, positionY) {
+  positionY -= 20;
+  rectMode(CORNER);
+  fill("red");
+  strokeWeight(0);
+  rect(positionX, positionY, 4, 20);
+  triangle(
+    positionX + 4,
+    positionY + 10,
+    positionX + 14,
+    positionY + 10,
+    positionX + 4,
+    positionY
+  );
+  fill(0);
+  rectMode(CORNERS);
 }
 
 function draw() {
-  background(10, 10); // translucent background (creates trails)
-
-  // make a x and y grid of ellipses
-  for (let x = 0; x <= width; x = x + 30) {
-    for (let y = 0; y <= height; y = y + 30) {
-      // starting point of each circle depends on mouse position
-      const xAngle = map(mouseX, 0, width, -4 * PI, 4 * PI, true);
-      const yAngle = map(mouseY, 0, height, -4 * PI, 4 * PI, true);
-      // and also varies based on the particle's location
-      const angle = xAngle * (x / width) + yAngle * (y / height);
-
-      // each particle moves in a circle
-      const myX = x + 20 * cos(2 * PI * t + angle);
-      const myY = y + 20 * sin(2 * PI * t + angle);
-
-      ellipse(myX, myY, 10); // draw particle
-    }
+  updateTerrain();
+  renderTerrain();
+  if (bufferOffset >= segmentLength) {
+    // Add a new terrain point at the right end of the buffer
+    terrainBuffer.push(generateTerrainPoint());
+    terrainBuffer.shift(); // Remove the leftmost terrain point
+    bufferOffset -= segmentLength; // Offset correction
   }
-
-  t = t + 0.01; // update time
 }
+//change
