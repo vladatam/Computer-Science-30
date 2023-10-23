@@ -27,7 +27,7 @@ function setup() {
 }
 
 function mouseClicked(){
-  randomLocation = int(random(0,200));
+  randomLocation = int(random(40,180)); // Generate a random location on the road
   let randomDirection = int(random(2));
   if(randomDirection === 1){
     randomLocation *= -1;
@@ -48,7 +48,6 @@ function draw() {
   for(let i = 0; i < driveLeft.length; i ++){
     driveLeft[i].action();  
   }
-  print(frameCount);
   
 }
 
@@ -83,7 +82,6 @@ class Vehicle{                    //Create a vehicle class
   }
 
   move(){
-    print(this.speed);
     if(this.direction === 1){
       this.x -= this.speed;
     }
