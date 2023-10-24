@@ -16,7 +16,6 @@ function draw() {
   //Translate to middle of screen,
   
   translate(width/2,height/2);
-  rotate();
   clock(0,0);
   
 }
@@ -43,9 +42,22 @@ function clock(x,y){
     line(x,y-80,x,y-95);
   }
 
-  //Animated
+  //Animated one rotation = 1sec
+  push();
+  strokeWeight(2);
+  stroke('red');
+  rotate(frameCount/6);
+  line(x,y,x,y-100);
+  pop();
+  push();
   strokeWeight(5);
-  for(let i = 0; i<60; i++){
-    line(x,y,x,y-60);
-  }
+  rotate(frameCount/360);
+  line(x,y,x,y-50);
+  pop();
+  strokeWeight(4);
+  rotate(radians(frameCount/2));
+  line(x,y,x,y-70);
+  
+
+  
 }
