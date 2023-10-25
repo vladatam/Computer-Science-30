@@ -26,7 +26,6 @@ function drawRectange(){
       let rAmount = map(y,0,height,0,45);
 
       rotate(radians(random(-rAmount,rAmount)));
-
       let offset = map(y,0,height,0,10);
       square(random(-offset,offset),random(-offset,offset),s);
       pop();

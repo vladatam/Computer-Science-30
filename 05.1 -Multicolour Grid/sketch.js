@@ -14,20 +14,29 @@ function changeSize(){
     if(mouseButton === LEFT){
       squareSize -= 1;
       print(mouseButton);
+      
     }
     if(mouseButton === RIGHT){
       squareSize +=1; 
       print(mouseButton);
     }
   }
-  
 
+  //Minimun Square Size
+  if(squareSize < 20){
+    squareSize = 20;
+  }
+
+  //Maximum Square Size
+  if(squareSize > 100){
+    squareSize = 100;
+  }
 } 
 
 function grid(){
-  //using a double loop (nested loop) to draw the grid. 
-  for(let x = 0; x < width; x += squareSize){
-    for(let y = 0; y < height; y += squareSize){
+  //Using a double loop drawing grid, 
+  for(let x = 0; x < width-squareSize; x += squareSize){
+    for(let y = 0; y < height-squareSize; y += squareSize){
       fill(random(0,255),random(0,255),random(0,255));
       rect(x,y,squareSize);
     }
