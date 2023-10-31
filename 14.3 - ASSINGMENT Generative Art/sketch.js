@@ -7,7 +7,7 @@
 //Global Variables
 
 let offset = 0.3;
-let gridSize = 20;
+let gridSize = 50;
 
 function setup() {
   createCanvas(800, 800);
@@ -30,13 +30,18 @@ function revolvedLines(x,y){
 }
 
 function grid(){
+  rectMode(CENTER);
   colorMode(HSB);
   for(let x = 0; x<width; x+=gridSize){
     for(let y = 0; y<height; y+=gridSize){
+      push();
+      translate(x,y);
       fill(random(y*offset,x*offset), 100,250);
-      circle(x,y,15);
-
-
+      strokeWeight(50);
+      stroke(y%360,360,360);
+      rect(x,y,10);
+      line(x+random(gridSize,-gridSize),y+random(gridSize,-gridSize),x,y);
+      pop();
     }
   }
 }
