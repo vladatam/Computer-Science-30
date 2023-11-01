@@ -11,7 +11,7 @@ let colour;
 
 function changeSize(){
   if(mouseIsPressed){
-    if(mouseButton === LEFT){
+    if(mouseButton === LEFT){ //Left click increases size, right click decreases size. 
       squareSize -= 1;
       print(mouseButton);
       
@@ -34,9 +34,10 @@ function changeSize(){
 } 
 
 function grid(){
-  //Using a double loop drawing grid, 
+  //A double loop to draw a grid,
   for(let x = 0; x < width-squareSize; x += squareSize){
     for(let y = 0; y < height-squareSize; y += squareSize){
+      
       fill(random(0,255),random(0,255),random(0,255));
       rect(x,y,squareSize);
     }
@@ -44,7 +45,7 @@ function grid(){
   
 }
 
-function keyPressed(){
+function keyPressed(){ //Redraw the grid after key is pressed. 
   clear();
   changeSize();
   grid();
@@ -53,6 +54,7 @@ function keyPressed(){
 
  
 function setup() {
+  //Remove browser rightclick
   document.addEventListener("contextmenu", event => event.preventDefault());
   createCanvas(windowWidth, windowHeight);
   changeSize();
@@ -62,7 +64,4 @@ function setup() {
 
 function draw() {
   
- 
-  
-
 }
