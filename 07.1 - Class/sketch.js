@@ -5,7 +5,7 @@
 
 //Global Variables 
 let racers =[]; 
-const NUM_RACERS = 3;
+const NUM_RACERS = 10;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -40,5 +40,4 @@ class RoundRacer{
     }
   }
 
-  
 }
