@@ -3,6 +3,7 @@
 // Nov 6, 2023
 // A first foray into working with 2D arrays
 
+
 let grid =
 [[255,  0,  255,   0,  255],
  [0,   0,    0,    255,  0  ],
@@ -22,8 +23,7 @@ function draw() {
   row = getCurrentY();   col = getCurrentX();
   background(220);
   renderGrid();
-  winner();
-  print(col,row); //prints x,y
+  winner(); 
 }
 
 function mousePressed(){
@@ -53,17 +53,15 @@ function flip(col,row){
 }
 
 function winner(){
-  let check;
-  print(grid)
-  print(grid.every(checkColour));
-  if(grid === 0){
+  //Check to see if all the columns have been coloured black. 
+  let win = false;   
+  if(win === true){
     textAlign(CENTER);
     fill('red');
-    print('win');
     textSize(20);
     text("You Win!",width/2,height/2);
-  }
-  
+    noLoop();
+  } 
 }
 
 function checkColour(colour){
@@ -72,10 +70,13 @@ function checkColour(colour){
 
 function getCurrentX(){ //determine current column mouse is in, and return
   let constrainMouseX = constrain(mouseX, 0, width-1);
+  grid[row][col] = "green";
+  grid[row+1][col] = "green";
   return floor(constrainMouseX/rectWidth);  
 }
 function getCurrentY(){ //determine current row mouse is in, and return
   let constrainMouseY = constrain(mouseY, 0, height-1);
+
   return floor(constrainMouseY/rectHeight);
 }
 
