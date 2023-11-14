@@ -54,7 +54,12 @@ function flip(col,row){
 
 function winner(){
   //Check to see if all the columns have been coloured black. 
-  let win = false;   
+  let win = false; 
+  for(let i = 0; i < grid.length; i++){
+    let colours = grid[i];
+    let colours2 = colours[i];
+   
+  }  
   if(win === true){
     textAlign(CENTER);
     fill('red');
@@ -64,14 +69,13 @@ function winner(){
   } 
 }
 
-function checkColour(colour){
-  return colour < 1;
+function checkColour(colour,colours2){
+  return colour = colours2;
+
 }
 
 function getCurrentX(){ //determine current column mouse is in, and return
   let constrainMouseX = constrain(mouseX, 0, width-1);
-  grid[row][col] = "green";
-  grid[row+1][col] = "green";
   return floor(constrainMouseX/rectWidth);  
 }
 function getCurrentY(){ //determine current row mouse is in, and return
