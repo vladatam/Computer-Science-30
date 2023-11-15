@@ -54,23 +54,28 @@ function flip(col,row){
 
 function winner(){
   //Check to see if all the columns have been coloured black. 
-  let win = false; 
-  for(let i = 0; i < grid.length; i++){
-    let colours = grid[i];
-    let colours2 = colours[i];
+  let win = false;
+
+  if(grid[col][row] ===0){
+    win = true;
+  }
    
-  }  
+  
   if(win === true){
     textAlign(CENTER);
     fill('red');
     textSize(20);
     text("You Win!",width/2,height/2);
-    noLoop();
+  }
+  else{
+    clear();
+    renderGrid();
   } 
+  
 }
 
-function checkColour(colour,colours2){
-  return colour = colours2;
+function checkColour(colours){
+  return colours === 0;
 
 }
 
