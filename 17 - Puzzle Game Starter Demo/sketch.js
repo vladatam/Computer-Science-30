@@ -5,10 +5,10 @@
 
 
 let grid =
-[[255,  0,  255,   0,  255],
- [0,   0,    0,    255,  0  ],
- [255, 255,  0,    255,  0  ],
- [255, 0,    0,    255,  0 ]];
+[[],
+ [],
+ [],
+ []];
 
 const NUM_ROWS = 4;  const NUM_COLS = 5;
 let rectWidth, rectHeight, row, col;
@@ -16,7 +16,10 @@ let rectWidth, rectHeight, row, col;
 function setup() {
   rectWidth = 70;  rectHeight = 70;
   createCanvas(NUM_COLS*rectWidth, NUM_ROWS*rectHeight); 
-  
+  for(let i = 0; i < NUM_COLS; i ++){
+    grid[i].push(floor(random(0,255)));
+    print(grid);
+  }
 }
 
 function draw() {
@@ -55,11 +58,7 @@ function flip(col,row){
 function winner(){
   //Check to see if all the columns have been coloured black. 
   let win = false;
-
-  if(grid[col][row] ===0){
-    win = true;
-  }
-   
+  
   
   if(win === true){
     textAlign(CENTER);
