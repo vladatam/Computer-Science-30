@@ -4,22 +4,27 @@
 // A first foray into working with 2D arrays
 
 
-let grid =
-[[],
- [],
- [],
- []];
-
 const NUM_ROWS = 4;  const NUM_COLS = 5;
 let rectWidth, rectHeight, row, col;
+
+
+let grid = [];
+
 
 function setup() {
   rectWidth = 70;  rectHeight = 70;
   createCanvas(NUM_COLS*rectWidth, NUM_ROWS*rectHeight); 
-  for(let i = 0; i < NUM_COLS; i ++){
-    grid[i].push(floor(random(0,255)));
-    print(grid);
+
+  //Push random fill values into array. 
+  for(let i = 0; i<NUM_COLS; i++){
+    grid.push([random(0,255)]);
+
+    for(let z = 0; z<NUM_ROWS; z++){
+      grid[i].push(floor(random(2)*255));
+    }
   }
+
+  print(grid);
 }
 
 function draw() {
@@ -57,20 +62,22 @@ function flip(col,row){
 
 function winner(){
   //Check to see if all the columns have been coloured black. 
-  let win = false;
-  
-  
-  if(win === true){
+  let score = 0;
+  for(let x = 0; x < NUM_COLS; x++){
+    for(let y = 0; y < NUM_ROWS; y++){
+      let fillValue = grid[y][x];
+      if(fillValue === 0){
+        score ++;
+      }
+    }
+  }  
+  if(score === NUM_COLS*NUM_ROWS){
     textAlign(CENTER);
     fill('red');
-    textSize(20);
+    textSize(50);
     text("You Win!",width/2,height/2);
   }
-  else{
-    clear();
-    renderGrid();
-  } 
-  
+
 }
 
 function checkColour(colours){
