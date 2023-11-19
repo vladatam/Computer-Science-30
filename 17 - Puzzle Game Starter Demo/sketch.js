@@ -1,12 +1,12 @@
 // Puzzle Game Starter
 // Vlad Atamanchuk
 // Nov 6, 2023
-// A first foray into working with 2D arrays
+// A interactive puzzle game
 
 
 const NUM_ROWS = 4;  const NUM_COLS = 5;
-let rectWidth, rectHeight, row, col;
 
+let rectWidth, rectHeight, row, col;
 
 let grid = [];
 
@@ -16,11 +16,15 @@ function setup() {
   createCanvas(NUM_COLS*rectWidth, NUM_ROWS*rectHeight); 
 
   //Push random fill values into array. 
-  for(let i = 0; i<NUM_COLS; i++){
-    grid.push([random(0,255)]);
-
-    for(let z = 0; z<NUM_ROWS; z++){
-      grid[i].push(floor(random(2)*255));
+  for (let i = 0; i < NUM_COLS; i++) {
+    grid.push([]);
+    for (let z = 0; z < NUM_ROWS+1; z++) {
+      let value = random(0, 1); // Generates a random value between 0 and 1
+      if (value < 0.5) {
+        grid[i].push(0); // Map values less than 0.5 to 0
+      } else {
+        grid[i].push(255); // Map values greater than or equal to 0.5 to 255
+      }
     }
   }
 
@@ -80,6 +84,8 @@ function winner(){
 
 }
 
+
+
 function checkColour(colours){
   return colours === 0;
 
@@ -107,4 +113,18 @@ function renderGrid(){
       rect(x*rectWidth, y*rectHeight, rectWidth, rectHeight);
     }
   }
+  crosshair(col, row)
+}
+
+
+function crosshair(col, row) {
+  // Highlight rectangles impacted by the click
+  fill('rgba(0, 255, 0, 0.4)'); // Green transparent overlay
+  noStroke();
+  rect(col * rectWidth, row * rectHeight, rectWidth, rectHeight);
+
+  if (col < NUM_COLS - 1) rect((col + 1) * rectWidth, row * rectHeight, rectWidth, rectHeight);
+  if (row > 0) rect(col * rectWidth, (row - 1) * rectHeight, rectWidth, rectHeight);
+  if (col > 0) rect((col - 1) * rectWidth, row * rectHeight, rectWidth, rectHeight);
+  if (row < NUM_ROWS - 1) rect(col * rectWidth, (row + 1) * rectHeight, rectWidth, rectHeight);
 }
