@@ -10,6 +10,7 @@ let rectWidth, rectHeight, row, col;
 
 let grid = [];
 
+let flipMode = "cross"; 
 
 function setup() {
   rectWidth = 70;  rectHeight = 70;
@@ -39,21 +40,40 @@ function draw() {
 }
 
 function mousePressed(){
-  //when the mouse is clicked flip the value at current
+  //when the mouse is clicked flip the value at current 
   //col,row + also flip 4 cardinal neighbours (N,E,S,W)
 
   //flip the 4 neighbours up,down,left,right
-  if(keyIsPressed){
-    if(key === "Shift")flip(col,row); //flip only @ mouse position if shift is held.
+  if(keyIsPressed && key === "Shift"){
+    flipMode = "single";
+    flip(col,row); //flip only @ mouse position if shift is held.    
   }
-  else {
+  if(flipMode === "square") {
+    flip(col,row)
+    if(col < NUM_COLS -1) flip(col+1,row); //Right Neighbour
+    if(row>0)flip(col+1,row+1); //Bottom Right Neightbour
+    flip(col, row+1); //Bottom Neighbour. 
+    
+  }
+  if(flipMode === "cross") {
     flip(col,row);
     if(col < NUM_COLS -1) flip(col+1,row); //Right Neighbour
     if(row>0)flip(col,row-1); //Up Neighbour
-    flip(col-1,row);
-    if(row < NUM_ROWS-1) flip(col,row+1);
+    flip(col-1,row); //Left Neightbour 
+    if(row < NUM_ROWS-1) flip(col,row+1); //Bottom Neighbour
   }
   
+}
+
+function keyPressed(){
+   if (keyCode === 32) { // Check if spacebar is pressed
+    if (flipMode === "cross") {
+      flipMode = "square"; // Toggle to square mode if currently in cross mode
+    } else {
+      flipMode = "cross"; // Toggle to cross mode if currently in square mode
+    }
+  print(flipMode);
+   }
 }
 
 function flip(col,row){
@@ -109,7 +129,7 @@ function renderGrid(){
       let fillValue = grid[y][x];
       fill(fillValue);
       //x:    0,   1,   2,  3,   4
-      //posx  0   50, 100, 150,200   expression? x→posx
+      //posx  0   50, 100, 150,200   expression? x→posx 
       rect(x*rectWidth, y*rectHeight, rectWidth, rectHeight);
     }
   }
@@ -122,9 +142,22 @@ function crosshair(col, row) {
   fill('rgba(0, 255, 0, 0.4)'); // Green transparent overlay
   noStroke();
   rect(col * rectWidth, row * rectHeight, rectWidth, rectHeight);
+  if(flipMode ==="single"){ 
+    fill('rgba(0, 255, 0, 0.4)');
+  }
+  else if(flipMode === "square"){
+  if (col < NUM_COLS) rect((col + 1) * rectWidth, row * rectHeight, rectWidth, rectHeight);
+  if (row > 0) rect(col * rectWidth, (row + 1) * rectHeight, rectWidth, rectHeight);
+  if (col > 0) rect((col + 1) * rectWidth, row+2 * rectHeight, rectWidth, rectHeight);
 
+  }
+  else if(flipMode === "cross"){
   if (col < NUM_COLS - 1) rect((col + 1) * rectWidth, row * rectHeight, rectWidth, rectHeight);
   if (row > 0) rect(col * rectWidth, (row - 1) * rectHeight, rectWidth, rectHeight);
   if (col > 0) rect((col - 1) * rectWidth, row * rectHeight, rectWidth, rectHeight);
-  if (row < NUM_ROWS - 1) rect(col * rectWidth, (row + 1) * rectHeight, rectWidth, rectHeight);
+    if (row < NUM_ROWS - 1) rect(col * rectWidth, (row + 1) * rectHeight, rectWidth, rectHeight);
+  }
+  
+  
+  
 }
