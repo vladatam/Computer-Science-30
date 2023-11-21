@@ -1,24 +1,24 @@
 // Puzzle Game Starter
 // Vlad Atamanchuk
 // Nov 6, 2023
-// A interactive puzzle game
+// A interactive puzzle game, win game by filling all the squares to black. 
 
-
-const NUM_ROWS = 4;  const NUM_COLS = 5;
+//Global Variables 
+const NUM_ROWS = 10; //Number of rows going horizontally. 
+const NUM_COLS = 10; //Number of collumns going vertically. 
 
 let rectWidth, rectHeight, row, col;
 
-let grid = [];
+let grid = []; //Open array to store grid fill values. 
 
-let flipMode = "cross"; 
+let flipMode = "cross"; //Keep track of the current flipping mode (crosshair)
 
 function setup() {
   rectWidth = 70;  rectHeight = 70;
   createCanvas(NUM_COLS*rectWidth, NUM_ROWS*rectHeight); 
-
-  //Push random fill values into array. 
-  for (let i = 0; i < NUM_COLS; i++) {
-    grid.push([]);
+ 
+  for (let i = 0; i < NUM_COLS; i++) {  //Push random fill values into array using for loop. 
+    grid.push([]); //First push empty array, 
     for (let z = 0; z < NUM_ROWS+1; z++) {
       let value = random(0, 1); // Generates a random value between 0 and 1
       if (value < 0.5) {
@@ -48,10 +48,11 @@ function mousePressed(){
     flipMode = "single";
     flip(col,row); //flip only @ mouse position if shift is held.    
   }
+  else flipMode === "cross";
   if(flipMode === "square") {
-    flip(col,row)
+    flip(col,row);
     if(col < NUM_COLS -1) flip(col+1,row); //Right Neighbour
-    if(row>0)flip(col+1,row+1); //Bottom Right Neightbour
+    flip(col+1,row+1); //Bottom Right Neightbour
     flip(col, row+1); //Bottom Neighbour. 
     
   }
@@ -97,7 +98,7 @@ function winner(){
   }  
   if(score === NUM_COLS*NUM_ROWS){
     textAlign(CENTER);
-    fill('red');
+    fill('red'); 
     textSize(50);
     text("You Win!",width/2,height/2);
   }
@@ -140,21 +141,20 @@ function renderGrid(){
 function crosshair(col, row) {
   // Highlight rectangles impacted by the click
   fill('rgba(0, 255, 0, 0.4)'); // Green transparent overlay
-  noStroke();
   rect(col * rectWidth, row * rectHeight, rectWidth, rectHeight);
   if(flipMode ==="single"){ 
     fill('rgba(0, 255, 0, 0.4)');
   }
   else if(flipMode === "square"){
-  if (col < NUM_COLS) rect((col + 1) * rectWidth, row * rectHeight, rectWidth, rectHeight);
+  if(row<NUM_COLS)rect((col + 1) * rectWidth, row * rectHeight, rectWidth, rectHeight);
   if (row > 0) rect(col * rectWidth, (row + 1) * rectHeight, rectWidth, rectHeight);
-  if (col > 0) rect((col + 1) * rectWidth, row+2 * rectHeight, rectWidth, rectHeight);
+  if (col > 0) rect((col + 1) * rectWidth, (row+1)* rectHeight, rectWidth, rectHeight);
 
-  }
+  } 
   else if(flipMode === "cross"){
-  if (col < NUM_COLS - 1) rect((col + 1) * rectWidth, row * rectHeight, rectWidth, rectHeight);
-  if (row > 0) rect(col * rectWidth, (row - 1) * rectHeight, rectWidth, rectHeight);
-  if (col > 0) rect((col - 1) * rectWidth, row * rectHeight, rectWidth, rectHeight);
+    if (col < NUM_COLS - 1) rect((col + 1) * rectWidth, row * rectHeight, rectWidth, rectHeight);
+    if (row > 0) rect(col * rectWidth, (row - 1) * rectHeight, rectWidth, rectHeight);
+    if (col > 0) rect((col - 1) * rectWidth, row * rectHeight, rectWidth, rectHeight);
     if (row < NUM_ROWS - 1) rect(col * rectWidth, (row + 1) * rectHeight, rectWidth, rectHeight);
   }
   
