@@ -4,8 +4,8 @@
 // A interactive puzzle game, win game by filling all the squares to black. 
 
 //Global Variables 
-const NUM_ROWS = 10; //Number of rows going horizontally. 
-const NUM_COLS = 10; //Number of collumns going vertically. 
+const NUM_ROWS = 4; //Number of rows going horizontally. 
+const NUM_COLS = 5; //Number of collumns going vertically. 
 
 let rectWidth, rectHeight, row, col;
 
@@ -22,14 +22,12 @@ function setup() {
     for (let z = 0; z < NUM_ROWS+1; z++) {
       let value = random(0, 1); // Generates a random value between 0 and 1
       if (value < 0.5) {
-        grid[i].push(0); // Map values less than 0.5 to 0
+        grid[i].push(0); // Pushes black for values less than 0.5 to 0
       } else {
-        grid[i].push(255); // Map values greater than or equal to 0.5 to 255
+        grid[i].push(255); // Pushes white for values less than 0.5 to 1
       }
     }
   }
-
-  print(grid);
 }
 
 function draw() {
