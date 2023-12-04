@@ -8,14 +8,39 @@
 
 let offset = 0.3;
 let gridSize = 50;
+let angle = 0;
+let r = 10;
+
+
 
 function setup() {
-  createCanvas(800, 800);
+  createCanvas(2000, 2000);
   background(220);
-
+  
   // revolvedLines(width,height);
-  grid();
+  // grid();
+
+
 }
+function draw(){
+  spiral();
+}
+
+
+function spiral() {
+  strokeWeight(4);
+  translate(width/2, height/2);
+  strokeWeight(16);
+  stroke(random(255),random(255),random(255));
+  let x = r * cos(angle);
+  let y = r * sin(angle);
+  point(x, y, 10);
+  angle += 0.04;
+  r -= 0.2;
+
+}
+
+
 
 function revolvedLines(x,y){
   push();
@@ -39,7 +64,7 @@ function grid(){
       fill(random(y*offset,x*offset), 100,250);
       strokeWeight(50);
       stroke(y%360,360,360);
-      rect(x,y,10);
+      rect(x,y,20);
       line(x+random(gridSize,-gridSize),y+random(gridSize,-gridSize),x,y);
       pop();
     }
