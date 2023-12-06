@@ -17,7 +17,7 @@ function setup() {
 function draw() {
   background(225);
   if(collideRectCircle(mouseX,mouseY,120,60,width/2,height/2,circleD)){
-    fill(random(255),random(255),random(255));
+    fill(randdom(255),random(255),random(255));
   }
   else{
     noFill();
