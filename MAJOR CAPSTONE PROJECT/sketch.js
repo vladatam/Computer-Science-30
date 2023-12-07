@@ -7,47 +7,81 @@
 
 //Global Variables
 let fruit;
-
-let ball; 
+let size1; 
 
 function preload(){
-  ball = createSprite();
-  ball.img = loadImage("assets/Diamond.png");
+  // fruit = createSprite();
+  // fruit.img = loadImage("assets/Diamond.png");
+  
 }
-
-let fruits; 
-
-
 
 
 function setup() {
   imageMode(CENTER);
-  createCanvas(windowWidth, windowHeight);
-  fruits = new Fruit(width/2, height/2);
+  createCanvas(windowWidth, windowHeight); 
+  world.gravity.y = 10;
+  fruits();
+  inboundArea();
+
+
+  // fruits = new Fruit();
+  
 }
 
 function draw() { 
-  background(0);
-fruits.display();
-fruits.move();
+background(255);
+// fruits.display();
+// fruits.move();
  
 }
 
-class Fruit{
+
+function fruits(){
+   size1 = random(floor(10, 100));
+  if(mouse.presses()){
+    fruit = createSprite(width/2,height/2, size, "d");
+  }
   
-  constructor(){
-    
-	
-  }
-
-  move(){
-	
-
-  }
-
-  display(){
-	ball.x = width/2, ball.y = height/2;
-	ball.scale = 0.2;
-  }
-
+  
 }
+
+
+
+function inboundArea(){
+  let walls;
+  let floor = createSprite();
+  //Create the bottom of the canvas. 
+  floor.y = height;
+  floor.w = width;
+  floor.h = 200;
+  floor.color = "white";
+  floor.collider = "kinematic";
+
+  //create the sides 
+  walls = createSprite(0, height/2, 100, height, "static");
+  
+}
+
+
+
+
+
+// class Fruit{
+  
+//   constructor(){
+   
+	
+//   }
+
+//   move(){
+	
+
+//   }
+
+//   display(){
+//   fruit.collider = "static";
+// 	fruit.x = width/2, fruit.y = height/2;
+// 	fruit.scale = 0.2;
+//   }
+
+// }
