@@ -6,82 +6,68 @@
 // - describe what you did to take this project "above and beyond"
 
 //Global Variables
-let fruit;
-let size1; 
+let balls = [];
+let catcher;
+let ground, wall, wall2;
+let picture;
 
 function preload(){
-  // fruit = createSprite();
-  // fruit.img = loadImage("assets/Diamond.png");
-  
+  picture = loadImage("assets/Diamond.png");
 }
-
 
 function setup() {
-  imageMode(CENTER);
-  createCanvas(windowWidth, windowHeight); 
-  world.gravity.y = 10;
-  fruits();
-  inboundArea();
+  createCanvas(windowWidth, windowHeight);
+  stroke("white");
 
+  world.gravity.y = 2;
 
-  // fruits = new Fruit();
+  ground = createSprite(width / 2, height - 10, width, 20);
+  ground.immovable = true;
+  ground.color = "white";
+
+  wall = createSprite(0, 0, 40, height*2);
+  wall.immovable = true;
+  wall.color = "white";
+
+  wall2 = createSprite(width, 0, 40, height*2);
+  wall2.immovable = true;
+  wall2.color = "white";
   
+  catcher = createSprite(width / 2, height - 40, 80, 20);
+  catcher.shapeColor = color(255);
+  catcher.collider = "k";
 }
 
-function draw() { 
-background(255);
-// fruits.display();
-// fruits.move();
- 
-}
+function draw() {
+  background(200);
 
-
-function fruits(){
-   size1 = random(floor(10, 100));
-  if(mouse.presses()){
-    fruit = createSprite(width/2,height/2, size, "d");
+  if (mouse.pressed()) {
+    let ball = createSprite(mouseX, mouseY, 20, 20);
+    ball.img = picture;
+    ball.scale = 0.5;
+    ball.d = 200;
+    ball.velocity.y = 5;
+    ball.rotation = 2;
+    ball.shapeColor = color(random(255), random(255), random(255));
+    balls.push(ball);
   }
-  
-  
+
+  for (let i = 0; i < balls.length; i++) {
+    let ball = balls[i];
+    if (ball.collide(ground)) {
+      ball.velocity.y = 0;
+    }
+
+    if (catcher.overlap(ball)) {
+      ball.remove();
+    }
+  }
+
+  if(kb.pressing(LEFT_ARROW)) {
+    catcher.position.x -= 5;
+  } else if (kb.pressing(RIGHT_ARROW)) {
+    catcher.position.x += 5;
+  }
+
+  drawSprites();
 }
-
-
-
-function inboundArea(){
-  let walls;
-  let floor = createSprite();
-  //Create the bottom of the canvas. 
-  floor.y = height;
-  floor.w = width;
-  floor.h = 200;
-  floor.color = "white";
-  floor.collider = "kinematic";
-
-  //create the sides 
-  walls = createSprite(0, height/2, 100, height, "static");
-  
-}
-
-
-
-
-
-// class Fruit{
-  
-//   constructor(){
-   
-	
-//   }
-
-//   move(){
-	
-
-//   }
-
-//   display(){
-//   fruit.collider = "static";
-// 	fruit.x = width/2, fruit.y = height/2;
-// 	fruit.scale = 0.2;
-//   }
-
-// }
