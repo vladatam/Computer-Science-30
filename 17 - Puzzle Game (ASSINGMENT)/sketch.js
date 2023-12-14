@@ -7,18 +7,18 @@
 //    hold shift to only flip a single square at a time. 
 
 //Global Variables 
-const NUM_ROWS = 4; //Number of rows going horizontally. Can modify to make more challenging. 
-const NUM_COLS = 5; //Number of collumns going vertically. 
+const NUM_ROWS = 50; //Number of rows going horizontally. Can modify to make more challenging. 
+const NUM_COLS = 50; //Number of collumns going vertically. 
 let rectWidth, rectHeight, row, col;
 let grid = []; //Open array to store grid fill values. 
 let flipMode = "cross"; //Keep track of the current flipping mode (crosshair)
 
 function setup() {
-  rectWidth = 70;  rectHeight = 70;
+  rectWidth = 15;  rectHeight = 15;
   createCanvas(NUM_COLS*rectWidth, NUM_ROWS*rectHeight); 
   for (let i = 0; i < NUM_COLS; i++) {  //Push random fill values into array using for loop. 
     grid.push([]); //First push empty array, 
-    for (let z = 0; z < NUM_ROWS+1; z++) {
+    for (let z = 0; z < NUM_ROWS; z++) {
       let value = random(0, 1); // Generates a random value between 0 and 1
       if (value < 0.5) {
         grid[i].push(0); // Pushes black for values less than 0.5 to 0

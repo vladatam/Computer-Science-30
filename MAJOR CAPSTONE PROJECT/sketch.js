@@ -14,6 +14,8 @@ let currentImage = 0;
 
 let diameter = 40; 
 
+
+
 function preload(){
   //picture = loadImage("assets/Diamond.png");
   //= loadImage("assets/Strawberry.png");
@@ -21,7 +23,6 @@ function preload(){
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  balls.push(new Balls);
   stroke("white");
 
   world.gravity.y = 2;
@@ -37,44 +38,51 @@ function setup() {
   wall2 = createSprite(width, 0, 40, height*2);
   wall2.static = true;
   wall2.color = "white";
-  
   }
 
 function draw() {
   background(200);
   for(let i = 0; i < balls.length; i++){
-    balls[i].create();
-    balls[i].display();
     balls[i].overlay();
+   // balls[i].merge();
+
   }
   
-  
+  drawSprites();
+}
+
+function mousePressed(){
+  balls.push(new Balls);
+  balls[balls.length-1].create();
 }
 
 class Balls {
   constructor(){
-    this.diameter = 20; 
+    this.diameter = 40; 
     this.velocity = 5; 
     this.rotation = 2;
     this.shapeColor = color('red');
   }
   
   create(){
-    if (mouse.pressed()) {
-      let ball = createSprite(mouseX, 200, 20, 20);
-      //ball.img = picture;
-      ball.scale = 0.20;
-      ball.d = diameter;
-      ball.velocity.y = 5;
-      ball.rotation = 2;
-      ball.shapeColor = color(random(255), random(255), random(255));
-      balls.push(ball);
-    }
+    let ball = createSprite(mouseX, 200, 20, 20);
+    //ball.img = picture;
+    ball.d = this.diameter;
+    ball.velocity.y = this.velocity;
+    ball.rotation = this.rotation;
+    ball.shapeColor = this.shapeColor;
+    print(balls);
   }
 
-  display(){
-    drawSprites();  //Draw all the sprites. 
+  merge(){
+    for(let i = 0; i<balls.length; i++){
+      if(balls[i].collide(balls[i])){
+        this.diameter = 20; 
+      }
+    }
+    
   }
+
 
   overlay(){
     //Overlay of where the ball will be dropped. 
@@ -82,4 +90,6 @@ class Balls {
     line(mouseX, 200, mouseX, height);
   }
 
+
 }
+
