@@ -58,23 +58,24 @@ function mousePressed(){
  
 }
 
-function mergeBalls(){
-  for(let i = 0; i<balls.length-1; i++){
-    if(balls[i].collides(balls[i+1])){
-      balls[i+1].diameter += balls[i].diameter/3;
-      balls[i+1].position.x = balls[i].position.x;
-      balls[i+1].position.y = balls[i].position.y;
-      balls[i+1].color = "blue";
-      
-      balls[i].remove();
+function mergeBalls() {
+  for (let i = 0; i < balls.length; i++) {
+    for (let j = i + 1; j < balls.length; j++) {
+      if (balls[i].collides(balls[j])) {
+        if (floor(balls[j].diameter) === floor(balls[i].diameter)) {
+          balls[j].diameter += balls[i].diameter / 3;
+          balls[j].position.x = balls[i].position.x;
+          balls[j].position.y = balls[i].position.y;
+          balls[j].shapeColor = "blue";
+          balls[i].remove();
+        }
+      }
     }
-    
-    
-  
-  
   }
-
 }
+
+
+
 
 function overlay(){
   circle(mouseX, 100, 50);

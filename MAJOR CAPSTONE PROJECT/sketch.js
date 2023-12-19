@@ -6,7 +6,8 @@
 // - describe what you did to take this project "above and beyond"
 
 //Global Variables
-let balls = [];
+let balls;
+let ballManager; 
 let ground, wall, wall2;
 let pictures = [];
 let picture; 
@@ -25,26 +26,32 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   stroke("white");
 
+  ballManager = new Balls; 
+  balls = new Group();
+
+
   world.gravity.y = 2;
 
-  ground = createSprite(width / 2, height - 10, width, 20);
-  ground.static = true;
-  ground.color = "white";
+  borders = new Group();
+  borders.add = new borders.Sprite(width / 2, height - 10, width, 20); //Floor
+  borders.add = new borders.Sprite(0, 0, 40, height*2); //Left Wall 
+  borders.add = new borders.Sprite(width, 0, 40, height*2); //Right Wall
+  borders.static = true;
+  borders.color = "white";
 
-  wall = createSprite(0, 0, 40, height*2);
-  wall.static = true;
-  wall.color = "white";
+  borders.add = new borders.Sprite(0, 200, width*2, 1);
+  borders[3].static = false; 
 
-  wall2 = createSprite(width, 0, 40, height*2);
-  wall2.static = true;
-  wall2.color = "white";
-  }
+}
+
+
 
 function draw() {
   background(200);
   for(let i = 0; i < balls.length; i++){
-    balls[i].overlay();
-   // balls[i].merge();
+    ballManager.overlay();
+    ballManager.merge();
+    ballManager.losingLine();
 
   }
   
@@ -52,17 +59,19 @@ function draw() {
 }
 
 function mousePressed(){
-  balls.push(new Balls);
-  balls[balls.length-1].create();
+  ballManager.create();
 }
 
 class Balls {
   constructor(){
-    this.diameter = 40; 
+    this.diameter = 100; 
     this.velocity = 5; 
     this.rotation = 2;
-    this.shapeColor = color('red');
+    this.shapeColor = color("red");
   }
+  
+
+
   
   create(){
     let ball = createSprite(mouseX, 200, 20, 20);
@@ -71,13 +80,22 @@ class Balls {
     ball.velocity.y = this.velocity;
     ball.rotation = this.rotation;
     ball.shapeColor = this.shapeColor;
-    print(balls);
+    balls.add(ball);
+    
   }
 
   merge(){
-    for(let i = 0; i<balls.length; i++){
-      if(balls[i].collide(balls[i])){
-        this.diameter = 20; 
+    for (let i = 0; i < balls.length; i++) {
+      for (let j = i + 1; j < balls.length; j++) {
+        if (balls[i].collides(balls[j])) {
+          if (floor(balls[j].diameter) === floor(balls[i].diameter)) {
+            balls[j].diameter += balls[i].diameter / 3;
+            balls[j].position.x = balls[i].position.x;
+            balls[j].position.y = balls[i].position.y;
+            balls[j].shapeColor = "blue";
+            balls[i].remove();
+          }
+        }
       }
     }
     
@@ -90,6 +108,15 @@ class Balls {
     line(mouseX, 200, mouseX, height);
   }
 
+  losingLine() {
+    for (let i = 0; i < balls.length; i++) {
+      if (balls[i].position.y < borders[3].position.y) {
+        print("YOU LOSE");
+        textAlign(CENTER);
+        text('YOU LOSE', width / 2, height / 2);
+        noLoop();
+      }
+    }
+  }
 
 }
-
