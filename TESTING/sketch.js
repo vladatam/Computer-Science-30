@@ -2,12 +2,15 @@
 let balls;
 let ground, wall, wall2;
 let pictures = [];
+let colours = ["red", "blue", "purple", "green","brown", "cyan"];
 let picture; 
 let currentImage = 0; 
 
 let diameter = 40; 
 
 let borders; 
+
+let currentColorIndex = 0; 
 
 
 function preload(){
@@ -48,13 +51,16 @@ function draw() {
 }
 
 function mousePressed(){
-  let ball = new balls.Sprite(mouseX, 100, 20, 20);
+  for(let i = 0; i < 50; i++){
+    let ball = new balls.Sprite(mouseX, 100, 20, 20);
   //ball.img = picture;
   ball.d = 50;
   ball.velocity.y = 2;
   ball.rotation = 2;
-  ball.shapeColor = "red";
+  ball.shapeColor = colours[0];
   print(balls);
+  }
+  
  
 }
 
@@ -64,9 +70,14 @@ function mergeBalls() {
       if (balls[i].collides(balls[j])) {
         if (floor(balls[j].diameter) === floor(balls[i].diameter)) {
           balls[j].diameter += balls[i].diameter / 3;
+          currentColorIndex ++;
           balls[j].position.x = balls[i].position.x;
           balls[j].position.y = balls[i].position.y;
-          balls[j].shapeColor = "blue";
+
+          if(currentColorIndex > colours.length-1) currentColorIndex = colours.length-1;
+          balls[j].shapeColor = colours[currentColorIndex];
+          
+
           balls[i].remove();
         }
       }

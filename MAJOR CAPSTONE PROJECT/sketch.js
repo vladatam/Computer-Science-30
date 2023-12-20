@@ -7,13 +7,19 @@
 
 //Global Variables
 let balls;
+let button;
 let ballManager; 
-let ground, wall, wall2;
+let borders;
 let pictures = [];
 let picture; 
 let currentImage = 0; 
 
+let currentColorIndex = 0;
+let colours = ["red", "blue", "purple", "green","brown", "cyan"];
+
 let diameter = 40; 
+
+let gameOver = false; 
 
 
 
@@ -24,38 +30,33 @@ function preload(){
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  stroke("white");
 
+  stroke("white");
   ballManager = new Balls; 
+  
+  ballManager.setUpBorders();
+
   balls = new Group();
 
+  world.gravity.y = 2; //Gravity so the balls fo
 
-  world.gravity.y = 2;
-
-  borders = new Group();
-  borders.add = new borders.Sprite(width / 2, height - 10, width, 20); //Floor
-  borders.add = new borders.Sprite(0, 0, 40, height*2); //Left Wall 
-  borders.add = new borders.Sprite(width, 0, 40, height*2); //Right Wall
-  borders.static = true;
-  borders.color = "white";
-
-  borders.add = new borders.Sprite(0, 200, width*2, 1);
-  borders[3].static = false; 
-
-}
-
+  button = createSprite(50,50, 50, 20);
+  button.text = "Restart";
+  button.static = true;
+} 
 
 
 function draw() {
   background(200);
-  for(let i = 0; i < balls.length; i++){
-    ballManager.overlay();
-    ballManager.merge();
-    ballManager.losingLine();
-
-  }
   
-  drawSprites();
+  ballManager.overlay();
+  if(!gameOver){
+    for(let i = 0; i < balls.length; i++){
+      ballManager.merge();
+      ballManager.losingLine();
+    }
+  }
+  restart();
 }
 
 function mousePressed(){
@@ -64,14 +65,25 @@ function mousePressed(){
 
 class Balls {
   constructor(){
-    this.diameter = 100; 
+    this.diameter = diameter; 
     this.velocity = 5; 
     this.rotation = 2;
     this.shapeColor = color("red");
+    borders = new Group();
+    
   }
   
 
+  setUpBorders(){
+    borders.add = new borders.Sprite(width / 2, height-20, width, 50); //Floor
+    borders.add = new borders.Sprite(0, 0, width*0.45, height*2); //Left Wall 
+    borders.add = new borders.Sprite(width, 0, width*0.45, height*2); //Right Wall
+    borders.static = true;
+    borders.color = "white";
 
+    borders.add = new borders.Sprite(0, 500, width*2, 1); // LOSING LINE
+    borders[3].static = false; 
+  }
   
   create(){
     let ball = createSprite(mouseX, 200, 20, 20);
@@ -90,15 +102,19 @@ class Balls {
         if (balls[i].collides(balls[j])) {
           if (floor(balls[j].diameter) === floor(balls[i].diameter)) {
             balls[j].diameter += balls[i].diameter / 3;
+            currentColorIndex ++;
             balls[j].position.x = balls[i].position.x;
             balls[j].position.y = balls[i].position.y;
-            balls[j].shapeColor = "blue";
+
+            if(currentColorIndex > colours.length-1) currentColorIndex --;
+
+            balls[j].shapeColor = colours[currentColorIndex];
+
             balls[i].remove();
           }
         }
       }
     }
-    
   }
 
 
@@ -114,9 +130,25 @@ class Balls {
         print("YOU LOSE");
         textAlign(CENTER);
         text('YOU LOSE', width / 2, height / 2);
-        noLoop();
+        gameOver = true;
       }
     }
   }
 
+  
+
+}
+
+function restart(){
+  if(button.mouse.hovering()){
+    button.color = "red";
+    if(mouse.pressing()){
+      print("Restart");
+      loop();
+    }
+  }
+  else{
+    button.color = "white";
+  }
+  
 }
