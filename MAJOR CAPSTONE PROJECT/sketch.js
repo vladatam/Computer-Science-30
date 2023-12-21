@@ -6,6 +6,7 @@
 // - describe what you did to take this project "above and beyond"
 
 //Global Variables
+let score; 
 let balls;
 let button;
 let ballManager; 
@@ -13,6 +14,8 @@ let borders;
 let pictures = [];
 let picture; 
 let currentImage = 0; 
+
+let currentScore = 0; 
 
 let currentColorIndex = 0;
 let colours = ["red", "blue", "purple", "green","brown", "cyan"];
@@ -30,7 +33,7 @@ function preload(){
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-
+  score = createGraphics(width,height);
   stroke("white");
   ballManager = new Balls; 
   
@@ -48,7 +51,6 @@ function setup() {
 
 function draw() {
   background(200);
-  
   ballManager.overlay();
   if(!gameOver){
     for(let i = 0; i < balls.length; i++){
@@ -56,11 +58,16 @@ function draw() {
       ballManager.losingLine();
     }
   }
+  ballManager.score();
   restart();
+  
 }
 
-function mousePressed(){
-  ballManager.create();
+function mousePressed(){ 
+  if(!gameOver){
+    ballManager.create(); 
+  }
+  
 }
 
 class Balls {
@@ -75,40 +82,41 @@ class Balls {
   
 
   setUpBorders(){
+
+
     borders.add = new borders.Sprite(width / 2, height-20, width, 50); //Floor
     borders.add = new borders.Sprite(0, 0, width*0.45, height*2); //Left Wall 
     borders.add = new borders.Sprite(width, 0, width*0.45, height*2); //Right Wall
     borders.static = true;
     borders.color = "white";
 
-    borders.add = new borders.Sprite(0, 500, width*2, 1); // LOSING LINE
-    borders[3].static = false; 
   }
   
-  create(){
-    let ball = createSprite(mouseX, 200, 20, 20);
+  create() {
+    let randomDiameter = random(20, 80); // Adjust the range as needed
+    ballManager.overlay(randomDiameter);
+    let ball = createSprite(mouseX, 200, randomDiameter, randomDiameter);
     //ball.img = picture;
-    ball.d = this.diameter;
+    ball.d = randomDiameter; // Set the diameter for the ball
     ball.velocity.y = this.velocity;
     ball.rotation = this.rotation;
-    ball.shapeColor = this.shapeColor;
+    ball.shapeColor = this.shapeColor; // Initial color
     balls.add(ball);
-    
   }
 
-  merge(){
+  merge() {
     for (let i = 0; i < balls.length; i++) {
       for (let j = i + 1; j < balls.length; j++) {
         if (balls[i].collides(balls[j])) {
           if (floor(balls[j].diameter) === floor(balls[i].diameter)) {
             balls[j].diameter += balls[i].diameter / 3;
-            currentColorIndex ++;
+            currentScore += this.diameter / 2;
             balls[j].position.x = balls[i].position.x;
             balls[j].position.y = balls[i].position.y;
 
-            if(currentColorIndex > colours.length-1) currentColorIndex --;
-
-            balls[j].shapeColor = colours[currentColorIndex];
+            // Assigning a different color for each new diameter
+            let colorIndex = floor(balls[j].diameter / 40) % colours.length;
+            balls[j].shapeColor = colours[colorIndex];
 
             balls[i].remove();
           }
@@ -118,15 +126,16 @@ class Balls {
   }
 
 
-  overlay(){
+  overlay(x){
     //Overlay of where the ball will be dropped. 
-    circle(mouseX, 200, diameter); 
+    circle(mouseX, 200, x); 
     line(mouseX, 200, mouseX, height);
   }
 
   losingLine() {
+    line(0, 200, width, 200);
     for (let i = 0; i < balls.length; i++) {
-      if (balls[i].position.y < borders[3].position.y) {
+      if (balls[i].position.y < 200) {
         print("YOU LOSE");
         textAlign(CENTER);
         text('YOU LOSE', width / 2, height / 2);
@@ -135,6 +144,11 @@ class Balls {
     }
   }
 
+  score(){
+    textAlign(CENTER);
+    textSize(40);
+    text(currentScore, 200, height/2);
+  }
   
 
 }
@@ -142,9 +156,12 @@ class Balls {
 function restart(){
   if(button.mouse.hovering()){
     button.color = "red";
+    
     if(mouse.pressing()){
+      gameOver = false; 
       print("Restart");
-      loop();
+      button.color = "green";
+      
     }
   }
   else{
