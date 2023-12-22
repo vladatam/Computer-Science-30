@@ -17,7 +17,7 @@ let currentImage = 0;
 
 let currentScore = 0; 
 
-let currentColorIndex = 0;
+let colorIndex = 0;
 let colours = ["red", "blue", "purple", "green","brown", "cyan"];
 
 let diameter = 40; 
@@ -27,8 +27,8 @@ let gameOver = false;
 
 
 function preload(){
-  //picture = loadImage("assets/Diamond.png");
-  //= loadImage("assets/Strawberry.png");
+  pictures.push(loadImage("assets/Diamond.png"));
+  pictures.push(loadImage("assets/Strawberry.png"));
 }
 
 function setup() {
@@ -51,9 +51,9 @@ function setup() {
 
 function draw() {
   background(200);
-  ballManager.overlay();
   if(!gameOver){
     for(let i = 0; i < balls.length; i++){
+      ballManager.overlay();
       ballManager.merge();
       ballManager.losingLine();
     }
@@ -72,10 +72,8 @@ function mousePressed(){
 
 class Balls {
   constructor(){
-    this.diameter = diameter; 
     this.velocity = 5; 
     this.rotation = 2;
-    this.shapeColor = color("red");
     borders = new Group();
     
   }
@@ -93,15 +91,14 @@ class Balls {
   }
   
   create() {
-    let randomDiameter = random(20, 80); // Adjust the range as needed
-    ballManager.overlay(randomDiameter);
-    let ball = createSprite(mouseX, 200, randomDiameter, randomDiameter);
-    //ball.img = picture;
-    ball.d = randomDiameter; // Set the diameter for the ball
-    ball.velocity.y = this.velocity;
-    ball.rotation = this.rotation;
-    ball.shapeColor = this.shapeColor; // Initial color
-    balls.add(ball);
+    this.diameter = 20;
+  let ball = createSprite(mouseX, 200, this.diameter, this.diameter);
+  ball.img = pictures[colorIndex];
+  ball.scale = this.diameter / pictures[colorIndex].width; // Adjust scale based on diameter
+  ball.d = this.diameter * 4; // Set the diameter for the ball
+  ball.velocity.y = this.velocity;
+  ball.rotation = this.rotation; // Initial color
+  balls.add(ball);
   }
 
   merge() {
@@ -113,11 +110,10 @@ class Balls {
             currentScore += this.diameter / 2;
             balls[j].position.x = balls[i].position.x;
             balls[j].position.y = balls[i].position.y;
-
+            colorIndex ++;
             // Assigning a different color for each new diameter
-            let colorIndex = floor(balls[j].diameter / 40) % colours.length;
-            balls[j].shapeColor = colours[colorIndex];
-
+            balls[j].img = pictures[colorIndex];
+            
             balls[i].remove();
           }
         }
@@ -126,9 +122,9 @@ class Balls {
   }
 
 
-  overlay(x){
+  overlay(){
     //Overlay of where the ball will be dropped. 
-    circle(mouseX, 200, x); 
+    circle(mouseX, 200,this.diameter); 
     line(mouseX, 200, mouseX, height);
   }
 
@@ -156,12 +152,11 @@ class Balls {
 function restart(){
   if(button.mouse.hovering()){
     button.color = "red";
-    
     if(mouse.pressing()){
       gameOver = false; 
       print("Restart");
       button.color = "green";
-      
+      balls.remove();
     }
   }
   else{
