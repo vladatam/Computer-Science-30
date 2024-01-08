@@ -17,8 +17,7 @@ let currentImage = 0;
 
 let currentScore = 0; 
 
-let colorIndex = 0;
-let colours = ["red", "blue", "purple", "green","brown", "cyan"];
+let imageIndex = 0;
 
 let diameter = 40; 
 
@@ -27,8 +26,11 @@ let gameOver = false;
 
 
 function preload(){
-  pictures.push(loadImage("assets/Diamond.png"));
-  pictures.push(loadImage("assets/Strawberry.png"));
+  pictures.push(loadImage("assets/plum.png"));
+  pictures.push(loadImage("assets/apple.png"));
+  pictures.push(loadImage("assets/pear.png"));
+  pictures.push(loadImage("assets/tomato.png"));
+  pictures.push(loadImage("assets/mango.png"));
 }
 
 function setup() {
@@ -38,6 +40,8 @@ function setup() {
   ballManager = new Balls; 
   
   ballManager.setUpBorders();
+
+  
 
   balls = new Group();
 
@@ -60,6 +64,12 @@ function draw() {
   }
   ballManager.score();
   restart();
+
+  if (kb.pressing(' ')){
+    balls.debug = true; 
+  }
+  else balls.debug = false; 
+  
   
 }
 
@@ -69,7 +79,6 @@ function mousePressed(){
   }
   
 }
-
 class Balls {
   constructor(){
     this.velocity = 5; 
@@ -92,13 +101,15 @@ class Balls {
   
   create() {
     this.diameter = 20;
-  let ball = createSprite(mouseX, 200, this.diameter, this.diameter);
-  ball.img = pictures[colorIndex];
-  ball.scale = this.diameter / pictures[colorIndex].width; // Adjust scale based on diameter
-  ball.d = this.diameter * 4; // Set the diameter for the ball
-  ball.velocity.y = this.velocity;
-  ball.rotation = this.rotation; // Initial color
-  balls.add(ball);
+    imageIndex = 0;
+    let ball = createSprite(mouseX, 200, this.diameter, this.diameter);
+    ball.img = pictures[imageIndex];
+    ball.scale = this.diameter /100;// Adjust scale based on diameter
+    ball.d = this.diameter ; // Set the diameter for the ball
+    ball.velocity.y = this.velocity;
+    ball.rotation = this.rotation; // Initial color
+    balls.add(ball);
+
   }
 
   merge() {
@@ -106,13 +117,15 @@ class Balls {
       for (let j = i + 1; j < balls.length; j++) {
         if (balls[i].collides(balls[j])) {
           if (floor(balls[j].diameter) === floor(balls[i].diameter)) {
-            balls[j].diameter += balls[i].diameter / 3;
+            balls[j].diameter += balls[i].diameter/2 ;
             currentScore += this.diameter / 2;
             balls[j].position.x = balls[i].position.x;
             balls[j].position.y = balls[i].position.y;
-            colorIndex ++;
+            balls[j].scale = balls[j].diameter / 100;
+            imageIndex ++;
+            print(imageIndex);
             // Assigning a different color for each new diameter
-            balls[j].img = pictures[colorIndex];
+            balls[j].img = pictures[imageIndex];
             
             balls[i].remove();
           }
