@@ -16,13 +16,17 @@ let borders;
 let pictures = [];
 let picture; 
 
-
 let currentScore = 0; 
 
 let imageIndex = 0;
 let currentImage = 0; 
+let upcomingImage = 0;
 
 let gameOver = false; 
+
+let ballScale = 115; 
+
+
 
 
 function preload(){
@@ -33,8 +37,10 @@ function preload(){
   pictures.push(loadImage("assets/tomato.png"));
 }
 
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  print(pictures);
   score = createGraphics(width,height);
   stroke("white");
   ballManager = new Balls; 
@@ -52,7 +58,6 @@ function setup() {
   button.static = true;
 } 
 
-
 function draw() {
   background(200);
   if(!gameOver){
@@ -63,26 +68,22 @@ function draw() {
     }
   }
   ballManager.score();
-  restart();
 
-  if (kb.pressing(' ')){
-    balls.debug = true; 
-  }
-  else balls.debug = false; 
+  restart();
+  
+  debugging(); // Makes collider visible
+   
   
 }
 
 function mousePressed(){ 
   if(!gameOver){
     if(!borders[1].mouse.hovering() && !borders[2].mouse.hovering()){ //See if mouse is in the playing area. 
-      imageIndex = floor(random(4));
-      currentImage = imageIndex; 
-      print(currentImage, imageIndex);
-    ballManager.create(); 
+      ballManager.create(); 
     }
   }
-  
 }
+
 class Balls {
   constructor(){
     this.velocity = 5; 
@@ -91,29 +92,24 @@ class Balls {
     
   }
   
-
   setUpBorders(){
+    push();
+    strokeWeight(0);
     borders.add = new borders.Sprite(width / 2, height-20, width, 50); //Floor
     borders.add = new borders.Sprite(0, 0, width*0.45, height*2); //Left Wall 
     borders.add = new borders.Sprite(width, 0, width*0.45, height*2); //Right Wall
     borders.static = true;
-    borders.color = "white";
-
+    borders.color = "brown";
+    pop();
   }
   
   create() {
-
+    imageIndex = floor(random(pictures.length));
+    print(imageIndex);
     this.diameter = floor(random([20,30,40,50,60]));
-    if(this.diameter === 20) imageIndex = 0;
-    if(this.diameter === 30) imageIndex = 1; 
-    if(this.diameter === 40) imageIndex = 2;
-    if(this.diameter === 50) imageIndex = 3;
-    if(this.diameter === 60) imageIndex = 4;
-    currentImage = imageIndex
-    print(this.diameter, imageIndex);
     let ball = createSprite(mouseX, 200, this.diameter, this.diameter);
     ball.img = pictures[imageIndex];
-    ball.scale = this.diameter / 100; // Adjust scale based on diameter
+    ball.scale = this.diameter / ballScale; // Adjust scale based on diameter
     ball.d = this.diameter;// Set the diameter for the ball
     ball.velocity.y = this.velocity;
     ball.rotation = this.rotation; // Initial color
@@ -131,15 +127,8 @@ class Balls {
             currentScore += this.diameter / 2;
             balls[j].position.x = balls[i].position.x;
             balls[j].position.y = balls[i].position.y;
-            balls[j].scale = balls[j].d / 100;
-
-            if (balls[j].d > 20 && balls[j].d < 30) imageIndex = 0;
-            else if (balls[j].d > 30 && balls[j].d < 40) imageIndex = 1;
-            else if (balls[j].d > 40 && balls[j].d < 50) imageIndex = 2;
-            else if (balls[j].d > 50 && balls[j].d < 60) imageIndex = 3;
-            else if (balls[j].d > 60 && balls[j].d < 70) imageIndex = 4;
-            balls[j].img = pictures[imageIndex];
-            
+            balls[j].scale = balls[j].d / ballScale;
+            balls[j].img = pictures[imageIndex++];
             balls[i].remove();
           }
         }
@@ -153,6 +142,7 @@ class Balls {
     imageMode(CENTER);
     image(pictures[currentImage], mouseX, 200, this.diameter, this.diameter); 
     line(mouseX, 200, mouseX, height);
+    //next image
     image(pictures[currentImage], width* 0.70, 100, this.diameter, this.diameter );
   }
 
@@ -175,6 +165,13 @@ class Balls {
   }
   
 
+}
+
+function debugging(){
+  if (kb.pressing(' ')){
+    balls.debug = true; 
+  }
+  else balls.debug = false; 
 }
 
 function restart(){
