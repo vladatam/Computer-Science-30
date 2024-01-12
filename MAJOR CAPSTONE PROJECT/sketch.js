@@ -14,7 +14,9 @@ let button;
 let ballManager; 
 let borders;
 let pictures = [];
-let picture; 
+let mergeSound, loseSound; 
+
+let fruit; 
 
 let currentScore = 0; 
 
@@ -24,17 +26,25 @@ let upcomingImage = 0;
 
 let gameOver = false; 
 
-let ballScale = 115; 
+let ballScale = 100; 
 
 
 
 
 function preload(){
-  pictures.push(loadImage("assets/plum.png"));
-  pictures.push(loadImage("assets/apple.png"));
-  pictures.push(loadImage("assets/pear.png"));
-  pictures.push(loadImage("assets/mango.png"));
-  pictures.push(loadImage("assets/tomato.png"));
+  pictures.push([{images:  loadImage("assets/00_cherry.png"), size: 46}]);
+  pictures.push([{images:  loadImage("assets/01_strawberry.png"), size: 55}])
+  pictures.push([{images:  loadImage("assets/02_grape.png"), size: 67}]);
+  pictures.push([{images:  loadImage("assets/03_gyool.png"), size: 81}]);
+  pictures.push([{images:  loadImage("assets/04_orange.png"), size: 97}]);
+  pictures.push([{images:  loadImage("assets/05_apple.png"), size: 117}]);
+  pictures.push([{images:  loadImage("assets/06_pear.png"), size: 200}]);
+  pictures.push([{images:  loadImage("assets/07_peach.png"), size: 142}]);
+  pictures.push([{images:  loadImage("assets/08_pineapple.png"), size: 206}]);
+  pictures.push([{images:  loadImage("assets/09_melon.png"), size: 249}]);
+  pictures.push([{images:  loadImage("assets/10_watermelon.png"), size: 300}]);
+  mergeSound = loadSound("sounds/splatter.mp3");
+  loseSound = loadSound("sounds/lose.mp3");
 }
 
 
@@ -60,11 +70,12 @@ function setup() {
 
 function draw() {
   background(200);
+  ballManager.losingLine();
   if(!gameOver){
     for(let i = 0; i < balls.length; i++){
       ballManager.overlay();
       ballManager.merge();
-      ballManager.losingLine();
+      
     }
   }
   ballManager.score();
@@ -104,11 +115,15 @@ class Balls {
   }
   
   create() {
-    imageIndex = floor(random(pictures.length));
+    
+    let ball = createSprite(mouseX, 200, this.diameter);
+    imageIndex = floor(random(pictures.length-5));
     print(imageIndex);
+    print(pictures[imageIndex]);
+    ball.img = pictures[imageIndex][0];
     this.diameter = floor(random([20,30,40,50,60]));
-    let ball = createSprite(mouseX, 200, this.diameter, this.diameter);
-    ball.img = pictures[imageIndex];
+  
+    
     ball.scale = this.diameter / ballScale; // Adjust scale based on diameter
     ball.d = this.diameter;// Set the diameter for the ball
     ball.velocity.y = this.velocity;
@@ -122,6 +137,7 @@ class Balls {
       for (let j = i + 1; j < balls.length; j++) {
         if (balls[i].collides(balls[j])) {
           if (floor(balls[j].diameter) === floor(balls[i].diameter)) {
+            mergeSound.play();
             balls[j].diameter += balls[i].diameter/4;
             print(balls[j].diameter);
             currentScore += this.diameter / 2;
@@ -140,20 +156,23 @@ class Balls {
   overlay(){
     //Overlay of where the ball will be dropped. 
     imageMode(CENTER);
-    image(pictures[currentImage], mouseX, 200, this.diameter, this.diameter); 
+    image(pictures[currentImage], mouseX, 200); 
     line(mouseX, 200, mouseX, height);
     //next image
-    image(pictures[currentImage], width* 0.70, 100, this.diameter, this.diameter );
+    image(pictures[currentImage], width* 0.70, 100);
   }
 
   losingLine() {
     line(0, 200, width, 200);
     for (let i = 0; i < balls.length; i++) {
       if (balls[i].position.y < 200) {
-        print("YOU LOSE");
+        loseSound.play();
         textAlign(CENTER);
-        text('YOU LOSE', width / 2, height / 2);
         gameOver = true;
+        balls.remove();
+        text('YOU LOSE', width / 2, height / 2);
+        
+        
       }
     }
   }
