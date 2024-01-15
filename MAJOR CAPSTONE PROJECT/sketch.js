@@ -21,8 +21,8 @@ let fruit;
 let currentScore = 0; 
 
 let imageIndex = 0;
-let currentImage = 0; 
 let upcomingImage = 0;
+let currentIndex = 0; 
 
 let gameOver = false; 
 
@@ -32,17 +32,17 @@ let ballScale = 100;
 
 
 function preload(){
-  pictures.push([{images:  loadImage("assets/00_cherry.png"), size: 46}]);
-  pictures.push([{images:  loadImage("assets/01_strawberry.png"), size: 55}])
-  pictures.push([{images:  loadImage("assets/02_grape.png"), size: 67}]);
-  pictures.push([{images:  loadImage("assets/03_gyool.png"), size: 81}]);
-  pictures.push([{images:  loadImage("assets/04_orange.png"), size: 97}]);
-  pictures.push([{images:  loadImage("assets/05_apple.png"), size: 117}]);
-  pictures.push([{images:  loadImage("assets/06_pear.png"), size: 200}]);
-  pictures.push([{images:  loadImage("assets/07_peach.png"), size: 142}]);
-  pictures.push([{images:  loadImage("assets/08_pineapple.png"), size: 206}]);
-  pictures.push([{images:  loadImage("assets/09_melon.png"), size: 249}]);
-  pictures.push([{images:  loadImage("assets/10_watermelon.png"), size: 300}]);
+  pictures.push({images:  loadImage("assets/00_cherry.png"), size: 46});
+  pictures.push({images:  loadImage("assets/01_strawberry.png"), size: 48})
+  pictures.push({images:  loadImage("assets/02_grape.png"), size: 61});
+  pictures.push({images:  loadImage("assets/03_gyool.png"), size: 76});
+  pictures.push({images:  loadImage("assets/04_orange.png"), size: 95});
+  pictures.push({images:  loadImage("assets/05_apple.png"), size: 117});
+  pictures.push({images:  loadImage("assets/06_pear.png"), size: 137});
+  pictures.push({images:  loadImage("assets/07_peach.png"), size: 156});
+  pictures.push({images:  loadImage("assets/08_pineapple.png"), size: 204});
+  pictures.push({images:  loadImage("assets/09_melon.png"), size: 220});
+  pictures.push({images:  loadImage("assets/10_watermelon.png"), size: 260});
   mergeSound = loadSound("sounds/splatter.mp3");
   loseSound = loadSound("sounds/lose.mp3");
 }
@@ -57,12 +57,12 @@ function setup() {
   
   ballManager.setUpBorders();
 
-  
+  world.gravity.y = 2; 
 
   balls = new Group();
 
-  world.gravity.y = 5; //Gravity so the balls fo
-
+ 
+  
   button = createSprite(50,50, 50, 20);
   button.text = "Restart";
   button.static = true;
@@ -115,17 +115,20 @@ class Balls {
   }
   
   create() {
-    
+
     let ball = createSprite(mouseX, 200, this.diameter);
-    imageIndex = floor(random(pictures.length-5));
-    print(imageIndex);
-    print(pictures[imageIndex]);
-    ball.img = pictures[imageIndex][0];
-    this.diameter = floor(random([20,30,40,50,60]));
-  
-    
-    ball.scale = this.diameter / ballScale; // Adjust scale based on diameter
+    ball.bounciness = 0;
+    //imageIndex = floor(random(pictures.length-5));
+
+    let currentImage = pictures[imageIndex].images; 
+
+    currentIndex = imageIndex;
+
+    ball.img = currentImage;
+    this.diameter = pictures[imageIndex].size;
+      // Adjust scale based on diameter
     ball.d = this.diameter;// Set the diameter for the ball
+    ball.scale = 1.05;
     ball.velocity.y = this.velocity;
     ball.rotation = this.rotation; // Initial color
     balls.add(ball);
@@ -135,17 +138,29 @@ class Balls {
   merge() {
     for (let i = 0; i < balls.length; i++) {
       for (let j = i + 1; j < balls.length; j++) {
-        if (balls[i].collides(balls[j])) {
-          if (floor(balls[j].diameter) === floor(balls[i].diameter)) {
+        if (balls[i].colliding(balls[j])) {
+          if (balls[j].img === balls[i].img) {
             mergeSound.play();
-            balls[j].diameter += balls[i].diameter/4;
-            print(balls[j].diameter);
-            currentScore += this.diameter / 2;
-            balls[j].position.x = balls[i].position.x;
-            balls[j].position.y = balls[i].position.y;
-            balls[j].scale = balls[j].d / ballScale;
-            balls[j].img = pictures[imageIndex++];
-            balls[i].remove();
+
+           
+
+            // Check the next level in the progression array
+            let nextLevelIndex = currentImageIndex + 1;
+
+            // Ensure the next level is within bounds of the pictures array
+            if (nextLevelIndex < pictures.length) {
+              currentScore += this.diameter / 2;
+
+              // Update the merging ball with the next level image and size
+              balls[j].position.x = balls[i].position.x;
+              balls[j].position.y = balls[i].position.y;
+              balls[j].img = pictures[nextLevelIndex].images;
+              balls[j].d = pictures[nextLevelIndex].size;
+              
+
+              // Remove the lower level ball
+              balls[i].remove();
+            }
           }
         }
       }
@@ -153,13 +168,15 @@ class Balls {
   }
 
 
+
   overlay(){
+    let overlayImage = pictures[0].images;
     //Overlay of where the ball will be dropped. 
     imageMode(CENTER);
-    image(pictures[currentImage], mouseX, 200); 
+    image(overlayImage, mouseX, 200); 
     line(mouseX, 200, mouseX, height);
     //next image
-    image(pictures[currentImage], width* 0.70, 100);
+    image(overlayImage, width* 0.70, 100);
   }
 
   losingLine() {
@@ -171,8 +188,6 @@ class Balls {
         gameOver = true;
         balls.remove();
         text('YOU LOSE', width / 2, height / 2);
-        
-        
       }
     }
   }
@@ -181,9 +196,7 @@ class Balls {
     textAlign(CENTER);
     textSize(40);
     text(currentScore, width/2, 150);
-  }
-  
-
+  }  
 }
 
 function debugging(){
@@ -206,5 +219,4 @@ function restart(){
   else{
     button.color = "white";
   }
-  
 }
