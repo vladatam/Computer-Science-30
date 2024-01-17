@@ -32,7 +32,7 @@ let ballScale = 100;
 
 
 function preload(){
-  pictures.push({images:  loadImage("assets/00_cherry.png"), size: 46});
+  pictures.push({images:  loadImage("assets/00_cherry.png"), size: 35});
   pictures.push({images:  loadImage("assets/01_strawberry.png"), size: 48})
   pictures.push({images:  loadImage("assets/02_grape.png"), size: 61});
   pictures.push({images:  loadImage("assets/03_gyool.png"), size: 76});
@@ -141,11 +141,14 @@ class Balls {
         if (balls[i].colliding(balls[j])) {
           if (balls[j].img === balls[i].img) {
             mergeSound.play();
-
+          
+            // Get the current level index 
+            
+            
            
 
             // Check the next level in the progression array
-            let nextLevelIndex = currentImageIndex + 1;
+            let nextLevelIndex = imageIndex + 1;
 
             // Ensure the next level is within bounds of the pictures array
             if (nextLevelIndex < pictures.length) {
