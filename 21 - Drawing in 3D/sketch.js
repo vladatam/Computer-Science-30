@@ -10,6 +10,7 @@ function setup() {
 
 function draw() {
   background(0);
+  
   rotateY(radians(frameCount));
   angle = map(mouseX,0,width,-120,120);
   boxes(70);

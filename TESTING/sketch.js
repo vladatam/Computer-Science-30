@@ -1,96 +1,201 @@
-let segmentLength = 1;
-let lineWidth = 1.5;
-let x = 0;
-let noiseValue = 0; // Initial noise value
-const noiseShift = 0.01;
-let numSegments;
-let tallestRect = 0;
-let currentRectX, currentRectY;
-let terrain = [];
-let terrainBuffer = [];
-let canvasWidth;
-let canvasHeight;
-let bufferOffset = 0;
+let score; 
+let balls;
+
+
+let button;
+let ballManager; 
+let borders;
+let pictures = [];
+let mergeSound, loseSound; 
+
+let fruit; 
+
+let currentScore = 0; 
+
+let imageIndex = 0;
+let currentImage = 0; 
+let upcomingImage = 0;
+
+let gameOver = false; 
+
+let ballScale = 100; 
+
+
+
+
+function preload(){
+  pictures.push([loadImage("assets/00_cherry.png")]);
+  pictures.push([loadImage("assets/01_strawberry.png")])
+  pictures.push([loadImage("assets/02_grape.png")]);
+  pictures.push([loadImage("assets/03_gyool.png")]);
+  pictures.push([loadImage("assets/04_orange.png")]);
+  pictures.push([loadImage("assets/05_apple.png")]);
+  pictures.push([loadImage("assets/06_pear.png")]);
+  pictures.push([loadImage("assets/07_peach.png")]);
+  pictures.push([loadImage("assets/08_pineapple.png")]);
+  pictures.push([loadImage("assets/09_melon.png")]);
+  pictures.push([loadImage("assets/10_watermelon.png")]);
+  mergeSound = loadSound("sounds/splatter.mp3");
+  loseSound = loadSound("sounds/lose.mp3");
+}
+
 
 function setup() {
-  canvasWidth = windowWidth;
-  canvasHeight = windowHeight;
-  createCanvas(canvasWidth, canvasHeight);
-  generateInitialTerrain();
-}
+  createCanvas(windowWidth, windowHeight);
+  print(pictures);
+  score = createGraphics(width,height);
+  stroke("white");
+  ballManager = new Balls; 
+  
+  ballManager.setUpBorders();
 
-function generateInitialTerrain() {
-  for (let i = 0; i < canvasWidth; i++) {
-    terrainBuffer.push(generateTerrainPoint());
-  }
-}
+  
 
-function generateTerrainPoint() {
-  let heightRect = random(canvasHeight);
-  heightRect = noise(noiseValue); // Use the noiseValue
-  heightRect = map(heightRect, 0, 1, 0, canvasHeight);
-  noiseValue += noiseShift; // Increment noise value
-  return heightRect;
-}
+  balls = new Group();
 
-function updateTerrain() {
-  let newTerrainPoint = generateTerrainPoint();
-  terrainBuffer.shift();
-  terrainBuffer.push(newTerrainPoint);
-  bufferOffset += segmentLength; // Move the terrain to the right
-}
+  world.gravity.y = 5; //Gravity so the balls fo
 
-function renderTerrain() {
-  background(255); // Clear the background
-  rectMode(CORNERS);
-  strokeWeight(lineWidth);
-
-  let averageCalc = terrainBuffer.reduce((a, b) => a + b, 0) / terrainBuffer.length;
-
-  for (let i = 0; i < terrainBuffer.length; i++) {
-    x = i * segmentLength;
-    // Render the mountains
-    rect(x, canvasHeight, x, canvasHeight - terrainBuffer[i]);
-  }
-
-  // Put flag at the tallest point in the terrain
-  let maxTerrainHeight = Math.max(...terrainBuffer);
-  let flagX = terrainBuffer.indexOf(maxTerrainHeight) * segmentLength;
-  drawFlag(flagX, canvasHeight - maxTerrainHeight);
-
-  // Render the line at average height
-  stroke("red");
-  strokeWeight(2);
-  line(0, canvasHeight - averageCalc, canvasWidth, canvasHeight - averageCalc);
-  stroke(0);
-}
-
-function drawFlag(positionX, positionY) {
-  positionY -= 20;
-  rectMode(CORNER);
-  fill("red");
-  strokeWeight(0);
-  rect(positionX, positionY, 4, 20);
-  triangle(
-    positionX + 4,
-    positionY + 10,
-    positionX + 14,
-    positionY + 10,
-    positionX + 4,
-    positionY
-  );
-  fill(0);
-  rectMode(CORNERS);
-}
+  button = createSprite(50,50, 50, 20);
+  button.text = "Restart";
+  button.static = true;
+} 
 
 function draw() {
-  updateTerrain();
-  renderTerrain();
-  if (bufferOffset >= segmentLength) {
-    // Add a new terrain point at the right end of the buffer
-    terrainBuffer.push(generateTerrainPoint());
-    terrainBuffer.shift(); // Remove the leftmost terrain point
-    bufferOffset -= segmentLength; // Offset correction
+  background(200);
+  ballManager.losingLine();
+  if(!gameOver){
+    for(let i = 0; i < balls.length; i++){
+      ballManager.overlay();
+      ballManager.merge();
+      
+    }
+  }
+  ballManager.score();
+
+  restart();
+  
+  debugging(); // Makes collider visible
+   
+  
+}
+
+function mousePressed(){ 
+  if(!gameOver){
+    if(!borders[1].mouse.hovering() && !borders[2].mouse.hovering()){ //See if mouse is in the playing area. 
+      ballManager.create(); 
+    }
   }
 }
-//change
+
+class Balls {
+  constructor(){
+    this.velocity = 5; 
+    this.rotation = 2;
+    borders = new Group();
+    
+  }
+  
+  setUpBorders(){
+    push();
+    strokeWeight(0);
+    borders.add = new borders.Sprite(width / 2, height-20, width, 50); //Floor
+    borders.add = new borders.Sprite(0, 0, width*0.45, height*2); //Left Wall 
+    borders.add = new borders.Sprite(width, 0, width*0.45, height*2); //Right Wall
+    borders.static = true;
+    borders.color = "brown";
+    pop();
+  }
+  
+  create() {
+    
+    let ball = createSprite(mouseX, 200, this.diameter);
+    imageIndex = floor(random(pictures.length-5));
+    print(imageIndex);
+    print(pictures[imageIndex][0]);
+    ball.img = pictures[imageIndex][0];
+    this.diameter = floor(random([20,30,40,50,60]));
+  
+    
+    ball.scale = this.diameter / ballScale; // Adjust scale based on diameter
+    ball.d = this.diameter;// Set the diameter for the ball
+    ball.velocity.y = this.velocity;
+    ball.rotation = this.rotation; // Initial color
+    balls.add(ball);
+
+  }
+
+  merge() {
+    for (let i = 0; i < balls.length; i++) {
+      for (let j = i + 1; j < balls.length; j++) {
+        if (balls[i].collides(balls[j])) {
+          if (floor(balls[j].diameter) === floor(balls[i].diameter)) {
+            mergeSound.play();
+            balls[j].diameter += balls[i].diameter/4;
+            print(balls[j].diameter);
+            currentScore += this.diameter / 2;
+            balls[j].position.x = balls[i].position.x;
+            balls[j].position.y = balls[i].position.y;
+            balls[j].scale = balls[j].d / ballScale;
+            balls[j].img = pictures[imageIndex++][0];
+            balls[i].remove();
+          }
+        }
+      }
+    }
+  }
+
+
+  overlay(){
+    //Overlay of where the ball will be dropped. 
+    imageMode(CENTER);
+    image(pictures[currentImage][0], mouseX, 200); 
+    line(mouseX, 200, mouseX, height);
+    //next image
+    image(pictures[currentImage][0], width* 0.70, 100);
+  }
+
+  losingLine() {
+    line(0, 200, width, 200);
+    for (let i = 0; i < balls.length; i++) {
+      if (balls[i].position.y < 200) {
+        loseSound.play();
+        textAlign(CENTER);
+        gameOver = true;
+        balls.remove();
+        text('YOU LOSE', width / 2, height / 2);
+        
+        
+      }
+    }
+  }
+
+  score(){
+    textAlign(CENTER);
+    textSize(40);
+    text(currentScore, width/2, 150);
+  }
+}
+
+
+function debugging(){
+  if (kb.pressing(' ')){
+    balls.debug = true; 
+  }
+  else balls.debug = false; 
+}
+
+function restart(){
+  if(button.mouse.hovering()){
+    button.color = "red";
+    if(mouse.pressing()){
+      gameOver = false; 
+      print("Restart");
+      button.color = "green";
+      balls.remove();
+    }
+  }
+  else{
+    button.color = "white";
+  }
+  
+}
