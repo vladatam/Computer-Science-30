@@ -127,22 +127,27 @@ class Balls {
   merge() {
     for (let i = 0; i < balls.length; i++) {
       for (let j = i + 1; j < balls.length; j++) {
-        if (balls[i].collides(balls[j])) {
-          if (floor(balls[j].diameter) === floor(balls[i].diameter)) {
+        if (balls[i].colliding(balls[j])) {
+          if (balls[i].img === balls[j].img) {
             mergeSound.play();
-            balls[j].diameter += balls[i].diameter/4;
-            print(balls[j].diameter);
-            currentScore += this.diameter / 2;
+
+            // Set upcomingIndex for the merged ball
+            balls[j].upcomingIndex = this.getIndex();
+
+            // Set the properties for the merged ball
             balls[j].position.x = balls[i].position.x;
             balls[j].position.y = balls[i].position.y;
-            balls[j].scale = balls[j].d / ballScale;
-            balls[j].img = pictures[imageIndex++][0];
+            balls[j].img = pictures[balls[j].upcomingIndex].images;
+            balls[j].d = pictures[balls[j].upcomingIndex].size;
+
+            // Remove the lower level ball
             balls[i].remove();
           }
         }
       }
     }
   }
+}
 
 
   overlay(){
